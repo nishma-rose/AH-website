@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { HashRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -9,11 +9,16 @@ import Collections from './components/Collections';
 import Testimonials from './components/Testimonials';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
-import AdminLogin from './components/AdminLogin';
-import AdminDashboard from './components/AdminDashboard';
-import TestimonialsPage from './components/TestimonialsPage';
-import WriteReviewPage from './components/WriteReviewPage';
 import './App.css';
+
+const AdminLogin = lazy(() => import('./components/AdminLogin'));
+const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
+const TestimonialsPage = lazy(() => import('./components/TestimonialsPage'));
+const WriteReviewPage = lazy(() => import('./components/WriteReviewPage'));
+
+function Loading() {
+  return <div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>;
+}
 
 function AppContent() {
   const navigate = useNavigate();
@@ -77,13 +82,15 @@ function AppContent() {
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/admin" element={<AdminLogin />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/reviews" element={<TestimonialsPage />} />
-        <Route path="/reviews/write" element={<WriteReviewPage />} />
-        <Route path="/*" element={<AppContent />} />
-      </Routes>
+      <Suspense fallback={<Loading />}>
+        <Routes>
+          <Route path="/admin" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/reviews" element={<TestimonialsPage />} />
+          <Route path="/reviews/write" element={<WriteReviewPage />} />
+          <Route path="/*" element={<AppContent />} />
+        </Routes>
+      </Suspense>
     </Router>
   );
 }
