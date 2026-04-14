@@ -2,6 +2,27 @@ import { useState, useEffect } from 'react';
 import { db } from '../firebase/config';
 import { doc, getDoc } from 'firebase/firestore';
 
+async function fetchFromAPI() {
+  try {
+    const res = await fetch('https://api.mediagold.in/rate', { 
+      method: 'GET',
+      headers: { 'Accept': 'application/json' }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return { gold: data.gold_22k || data.gold_24k, silver: data.silver };
+    }
+  } catch (e) {}
+  try {
+    const res = await fetch('https://goldpricesindia.com/api/prices');
+    if (res.ok) {
+      const data = await res.json();
+      return { gold: data['22k'] || data['24k'], silver: data.silver };
+    }
+  } catch (e) {}
+  return null;
+}
+
 function GoldRates() {
   const [rates, setRates] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -9,13 +30,23 @@ function GoldRates() {
   useEffect(() => {
     const loadRates = async () => {
       try {
-        console.log('Loading gold rates from Firebase...');
+        const apiData = await fetchFromAPI();
+        if (apiData) {
+          setRates({
+            gold: apiData.gold || 'Unavailable',
+            silver: apiData.silver || 'Unavailable',
+            date: new Date().toLocaleDateString("en-IN", { weekday: "long", year: "numeric", month: "long", day: "numeric" })
+          });
+          setLoading(false);
+          return;
+        }
+      } catch (e) { console.log('API fetch error:', e); }
+
+      try {
         if (db) {
           const rateDoc = await getDoc(doc(db, 'rates', 'current'));
-          console.log('Rate doc exists:', rateDoc.exists());
           if (rateDoc.exists()) {
             const data = rateDoc.data();
-            console.log('Rate data:', data);
             setRates({
               gold: data.gold || 'Unavailable',
               silver: data.silver || 'Unavailable',
@@ -25,10 +56,8 @@ function GoldRates() {
             return;
           }
         }
-        console.log('No rates found in Firebase');
-      } catch (err) {
-        console.error('Firebase error:', err);
-      }
+      } catch (err) { console.error('Firebase error:', err); }
+
       setLoading(false);
     };
     loadRates();
