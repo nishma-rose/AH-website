@@ -12,14 +12,7 @@ async function fetchFromAPI() {
       const data = await res.json();
       return { gold: data.gold_22k || data.gold_24k, silver: data.silver };
     }
-  } catch (e) {}
-  try {
-    const res = await fetch('https://goldpricesindia.com/api/prices');
-    if (res.ok) {
-      const data = await res.json();
-      return { gold: data['22k'] || data['24k'], silver: data.silver };
-    }
-  } catch (e) {}
+  } catch (e) { console.log('mediagold error:', e); }
   return null;
 }
 
