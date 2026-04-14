@@ -19,18 +19,10 @@ function GoldRates() {
           return;
         }
       }
-      const res = await fetch("https://api.npoint.io/8e171dca95f244037d66");
-      const data = await res.json();
-      setRates({
-        gold: data.Gold916 || 'Unavailable',
-        silver: data.Silver || 'Unavailable',
-        date: data.LastUpdated && data.LastUpdated.trim() !== '-'
-          ? data.LastUpdated
-          : new Date().toLocaleDateString("en-IN", { weekday: "long", year: "numeric", month: "long", day: "numeric" })
-      });
     } catch (err) {
-      setRates({ gold: 'Unavailable', silver: 'Unavailable', date: 'Unavailable' });
+      console.log('Firebase error:', err);
     }
+    setRates({ gold: 'Updating Soon', silver: 'Updating Soon', date: 'Contact for rates' });
   };
 
   useEffect(() => {
