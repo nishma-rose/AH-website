@@ -2,39 +2,12 @@ import { useState, useEffect } from 'react';
 import { db } from '../firebase/config';
 import { doc, getDoc } from 'firebase/firestore';
 
-async function fetchFromAPI() {
-  try {
-    const res = await fetch('https://api.mediagold.in/rate', { 
-      method: 'GET',
-      headers: { 'Accept': 'application/json' }
-    });
-    if (res.ok) {
-      const data = await res.json();
-      return { gold: data.gold_22k || data.gold_24k, silver: data.silver };
-    }
-  } catch (e) { console.log('mediagold error:', e); }
-  return null;
-}
-
 function GoldRates() {
   const [rates, setRates] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadRates = async () => {
-      try {
-        const apiData = await fetchFromAPI();
-        if (apiData) {
-          setRates({
-            gold: apiData.gold || 'Unavailable',
-            silver: apiData.silver || 'Unavailable',
-            date: new Date().toLocaleDateString("en-IN", { weekday: "long", year: "numeric", month: "long", day: "numeric" })
-          });
-          setLoading(false);
-          return;
-        }
-      } catch (e) { console.log('API fetch error:', e); }
-
       try {
         if (db) {
           const rateDoc = await getDoc(doc(db, 'rates', 'current'));
@@ -50,7 +23,6 @@ function GoldRates() {
           }
         }
       } catch (err) { console.error('Firebase error:', err); }
-
       setLoading(false);
     };
     loadRates();
