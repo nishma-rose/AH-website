@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react';
-import { db } from '../firebase/config';
-import { doc, getDoc } from 'firebase/firestore';
 
 function GoldRates() {
   const [rates, setRates] = useState(null);
@@ -8,22 +6,24 @@ function GoldRates() {
 
   useEffect(() => {
     const loadRates = async () => {
+      const apiUrl = localStorage.getItem('ratesApiUrl') || 'https://api.npoint.io/be02080f625fe3dcf48a';
       try {
-        if (db) {
-          const rateDoc = await getDoc(doc(db, 'rates', 'current'));
-          if (rateDoc.exists()) {
-            const data = rateDoc.data();
-            setRates({
-              gold: data.gold || 'Unavailable',
-              silver: data.silver || 'Unavailable',
-              date: data.updatedAt ? new Date(data.updatedAt).toLocaleDateString("en-IN", { weekday: "long", year: "numeric", month: "long", day: "numeric" }) : 'Today'
-            });
-            setLoading(false);
-            return;
-          }
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        const goldRate = data.Gold916 || data.gold;
+        const silverRate = data.Silver || data.silver;
+        if (goldRate) {
+          setRates({
+            gold: goldRate,
+            silver: silverRate || null,
+            date: data.LastUpdated || data.lastUpdated || 'Today'
+          });
         }
-      } catch (err) { console.error('Firebase error:', err); }
-      setLoading(false);
+      } catch (err) {
+        console.error('Error loading rates:', err);
+      } finally {
+        setLoading(false);
+      }
     };
     loadRates();
   }, []);
@@ -32,13 +32,15 @@ function GoldRates() {
     return (
       <div id="rates" className="rate-banner">
         <div className="container">
-          <div className="rate-item"><span>Loading rates...</span></div>
+          <div className="rate-item">
+            <span>Loading rates...</span>
+          </div>
         </div>
       </div>
     );
   }
 
-  if (!rates) {
+  if (!rates || !rates.gold) {
     return (
       <div id="rates" className="rate-banner">
         <div className="container">
@@ -55,7 +57,7 @@ function GoldRates() {
           <div className="rate-item rate-item--time">
             <span className="rate-icon">📞</span>
             <span>Contact for rates</span>
-            <strong>94863 94863</strong>
+            <strong>+91 99424 40230</strong>
           </div>
         </div>
       </div>
@@ -73,7 +75,7 @@ function GoldRates() {
         <div className="rate-item rate-item--silver">
           <span className="rate-icon">🥈</span>
           <span>Silver / Gram</span>
-          <strong>₹ {rates.silver}</strong>
+          <strong>₹ {rates.silver || '--'}</strong>
         </div>
         <div className="rate-item rate-item--time">
           <span className="rate-icon">🕐</span>

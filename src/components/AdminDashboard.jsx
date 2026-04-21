@@ -184,7 +184,7 @@ function AdminDashboard() {
           />
         )}
         {activeTab === 'rates' && (
-          <RatesManager rates={rates} setRates={setRates} onSave={updateRates} />
+          <RatesManager rates={rates} setRates={setRates} onSave={updateRates} showNotification={showNotification} />
         )}
       </main>
     </div>
@@ -313,11 +313,76 @@ function TestimonialManager({ testimonials, pendingReviews, onAdd, onDelete, onA
   );
 }
 
-function RatesManager({ rates, setRates, onSave }) {
+function RatesManager({ rates, setRates, onSave, showNotification }) {
+  const [apiUrl, setApiUrl] = useState(localStorage.getItem('ratesApiUrl') || '');
+  const [fetchFromApi, setFetchFromApi] = useState(false);
+
+  const handleApiUrlSave = () => {
+    localStorage.setItem('ratesApiUrl', apiUrl);
+    showNotification('API URL saved successfully!');
+  };
+
+  const handleFetchFromApi = async () => {
+    if (!apiUrl) {
+      alert('Please enter an API URL first');
+      return;
+    }
+    setFetchFromApi(true);
+    try {
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+      const goldRate = data.Gold916 || data.gold;
+      const silverRate = data.Silver || data.silver;
+      if (goldRate) {
+        setRates({ gold: goldRate, silver: silverRate || '' });
+        showNotification('Rates fetched successfully!');
+      } else {
+        alert('Invalid API response format');
+      }
+    } catch (err) {
+      alert('Failed to fetch from API: ' + err.message);
+    } finally {
+      setFetchFromApi(false);
+    }
+  };
+
   return (
     <div className="manager">
       <h2>Update Gold & Silver Rates</h2>
+      
+      <div className="api-config-section">
+        <h3 style={{marginBottom:"20px"}}>API Configuration</h3>
+        <div className="form-group">
+          <label>Rate API URL</label>
+          <div className="api-url-row">
+            <input style={{
+    padding: "15px",
+    margin: "0 20px 0 0",
+    width: "400px"
+}}
+              type="text" 
+              value={apiUrl} 
+              onChange={e => setApiUrl(e.target.value)} 
+              placeholder="https://api.npoint.io/..."
+            />
+            <button type="button" onClick={handleApiUrlSave} className="btn btn-sm">Save URL</button>
+          </div>
+        </div>
+        <div className="form-group" style={{margin: "20px 0 0 0"}}>
+          <label>Current API URL: {localStorage.getItem('ratesApiUrl') || 'Not set'}</label>
+          <button 
+            type="button" style={{marginLeft: "20px"}}
+            onClick={handleFetchFromApi} 
+            className="btn btn-gold"
+            disabled={fetchFromApi}
+          >
+            {fetchFromApi ? 'Fetching...' : 'Fetch from API'}
+          </button>
+        </div>
+      </div>
+
       <form onSubmit={(e) => { e.preventDefault(); onSave(); }} className="rates-form">
+         <h3 style={{marginBottom:"20px"}}>Manual Update</h3>
         <div className="form-group">
           <label>Gold 916 (per gram) ₹</label>
           <input type="text" value={rates.gold} onChange={e => setRates({...rates, gold: e.target.value})} placeholder="e.g. 7650" />

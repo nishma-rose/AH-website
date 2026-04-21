@@ -690,6 +690,12 @@ footer { background: var(--black); color: var(--white); padding: 3rem 0 1.5rem; 
   border: 1px solid #ddd;
   border-radius: 6px;
 }
+.api-config-section{
+  background: var(--white);
+  padding: 2rem;
+  border-radius: 8px;
+  margin: 20px 0;
+}
 
 /* Review Form */
 .review-section { background: var(--light); }
