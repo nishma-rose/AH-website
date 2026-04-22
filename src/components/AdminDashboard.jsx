@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { db, auth } from '../firebase/config';
-import { collection, getDocs, addDoc, deleteDoc, doc, setDoc, updateDoc, query, limit } from 'firebase/firestore';
+import { collection, getDocs, addDoc, deleteDoc, doc, setDoc, updateDoc, query, limit, getDoc } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 
@@ -22,6 +22,7 @@ function AdminDashboard() {
   const [testimonials, setTestimonials] = useState([]);
   const [pendingReviews, setPendingReviews] = useState([]);
   const [rates, setRates] = useState({ gold: '', silver: '' });
+  const [ratesApiUrl, setRatesApiUrl] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
@@ -52,6 +53,11 @@ function AdminDashboard() {
       const rateSnap = await getDocs(query(collection(db, 'rates'), limit(1)));
       if (!rateSnap.empty) {
         setRates(rateSnap.docs[0].data());
+      }
+      
+      const configSnap = await getDoc(doc(db, 'config', 'ratesApi'));
+      if (configSnap.exists()) {
+        setRatesApiUrl(configSnap.data().url || '');
       }
     } catch (err) {
       console.error('Error fetching data:', err);
@@ -124,6 +130,13 @@ function AdminDashboard() {
     showNotification('Rates updated successfully!');
   };
 
+  const saveRatesApiUrl = async (url) => {
+    if (!db) return;
+    await setDoc(doc(db, 'config', 'ratesApi'), { url, updatedAt: new Date().toISOString() });
+    setRatesApiUrl(url);
+    showNotification('API URL saved successfully!');
+  };
+
   if (loading) return (
     <div className="admin-loading">
       <div className="loading-spinner">
@@ -184,7 +197,7 @@ function AdminDashboard() {
           />
         )}
         {activeTab === 'rates' && (
-          <RatesManager rates={rates} setRates={setRates} onSave={updateRates} showNotification={showNotification} />
+          <RatesManager rates={rates} setRates={setRates} onSave={updateRates} showNotification={showNotification} apiUrl={ratesApiUrl} onSaveApiUrl={saveRatesApiUrl} />
         )}
       </main>
     </div>
@@ -313,23 +326,31 @@ function TestimonialManager({ testimonials, pendingReviews, onAdd, onDelete, onA
   );
 }
 
-function RatesManager({ rates, setRates, onSave, showNotification }) {
-  const [apiUrl, setApiUrl] = useState(localStorage.getItem('ratesApiUrl') || '');
+function RatesManager({ rates, setRates, onSave, showNotification, apiUrl, onSaveApiUrl }) {
+  const [localApiUrl, setLocalApiUrl] = useState(apiUrl || '');
   const [fetchFromApi, setFetchFromApi] = useState(false);
 
   const handleApiUrlSave = () => {
-    localStorage.setItem('ratesApiUrl', apiUrl);
-    showNotification('API URL saved successfully!');
+    if (localApiUrl) {
+      onSaveApiUrl(localApiUrl);
+    }
   };
 
   const handleFetchFromApi = async () => {
-    if (!apiUrl) {
-      alert('Please enter an API URL first');
+    const urlToFetch = localApiUrl || apiUrl;
+    if (!urlToFetch) {
+      showNotification('Please enter an API URL first', 'error');
       return;
     }
     setFetchFromApi(true);
     try {
-      const response = await fetch(apiUrl);
+      const response = await fetch(urlToFetch, {
+        mode: 'cors',
+        headers: { 'Accept': 'application/json' }
+      });
+      if (!response.ok) {
+        throw new Error('API response not OK (' + response.status + ')');
+      }
       const data = await response.json();
       const goldRate = data.Gold916 || data.gold;
       const silverRate = data.Silver || data.silver;
@@ -337,10 +358,10 @@ function RatesManager({ rates, setRates, onSave, showNotification }) {
         setRates({ gold: goldRate, silver: silverRate || '' });
         showNotification('Rates fetched successfully!');
       } else {
-        alert('Invalid API response format');
+        showNotification('Invalid API response format', 'error');
       }
     } catch (err) {
-      alert('Failed to fetch from API: ' + err.message);
+      showNotification('Failed to fetch: ' + err.message, 'error');
     } finally {
       setFetchFromApi(false);
     }
@@ -361,15 +382,15 @@ function RatesManager({ rates, setRates, onSave, showNotification }) {
     width: "400px"
 }}
               type="text" 
-              value={apiUrl} 
-              onChange={e => setApiUrl(e.target.value)} 
+              value={localApiUrl} 
+              onChange={e => setLocalApiUrl(e.target.value)} 
               placeholder="https://api.npoint.io/..."
             />
             <button type="button" onClick={handleApiUrlSave} className="btn btn-sm">Save URL</button>
           </div>
         </div>
         <div className="form-group" style={{margin: "20px 0 0 0"}}>
-          <label>Current API URL: {localStorage.getItem('ratesApiUrl') || 'Not set'}</label>
+          <label>Current API URL: {localApiUrl || apiUrl || 'Not set'}</label>
           <button 
             type="button" style={{marginLeft: "20px"}}
             onClick={handleFetchFromApi} 

@@ -66,9 +66,11 @@ function AppContent() {
 
   return (
     <>
-      <Header />
+      <div className="main-site-header-stack">
+        <GoldRates />
+        <Header />
+      </div>
       <Hero />
-      <GoldRates />
       <About />
       <Features />
       <Collections />
