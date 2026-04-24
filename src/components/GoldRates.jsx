@@ -3,9 +3,9 @@ import { db } from '../firebase/config';
 import { doc, getDoc } from 'firebase/firestore';
 
 const socialLinks = {
-  instagram: 'https://instagram.com/ah_jewellers_valliyur',
-  facebook: 'https://www.facebook.com/AHJewellersValliyur',
-  youtube: 'https://youtube.com/@ahjewellersvalliyur',
+  instagram: 'https://www.instagram.com/ahjewellers_vly?igsh=MWV6YTRjNnVyemZrYg==',
+  facebook: 'https://www.facebook.com/share/18DDtX4BxC/',
+  youtube: 'https://youtube.com/@ahjewellers?si=75d-fPDgEbta89cL',
   linkedin: 'https://www.linkedin.com/company/ah-jewellers',
   googleMap: 'https://maps.app.goo.gl/xyz123'
 };

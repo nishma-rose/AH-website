@@ -71,7 +71,7 @@ function Testimonials() {
     if (testimonial.source === 'google') {
       return (
         <div className="google-attribution">
-          <img src="/google-icon.svg" alt="Google" className="google-icon" />
+           <img src="/AH-website/google-icon.svg" alt="Google" className="google-icon" />
           <span>Google Review</span>
         </div>
       );
