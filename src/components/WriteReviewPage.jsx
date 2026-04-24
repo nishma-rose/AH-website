@@ -46,7 +46,7 @@ function WriteReviewPage() {
       <header className="site-header">
         <div className="site-header-left">
           <Link to="/">
-             <img src="/AH-website/logo.png" alt="Logo" />
+              <img src={`${import.meta.env.BASE_URL}logo.png`} alt="Logo" />
           </Link>
           <Link to="/" className="site-header-title">
             <span>A H JEWELLERS</span>

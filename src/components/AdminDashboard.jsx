@@ -162,7 +162,7 @@ function AdminDashboard() {
       <header className="admin-header">
         <div className="admin-header-left">
           <Link to="/">
-             <img src="/AH-website/logo.png" alt="Logo" />
+              <img src={`${import.meta.env.BASE_URL}logo.png`} alt="Logo" />
           </Link>
           <Link to="/" className="admin-header-title">
             <span>A H JEWELLERS</span>

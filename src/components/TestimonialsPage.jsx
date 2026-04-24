@@ -66,9 +66,9 @@ function TestimonialsPage() {
     <div className="testimonials-page">
       <header className="site-header">
         <div className="site-header-left">
-          <Link to="/">
-            <img src="/AH-website/logo.png" alt="Logo" />
-          </Link>
+           <Link to="/">
+             <img src={`${import.meta.env.BASE_URL}logo.png`} alt="Logo" />
+           </Link>
           <Link to="/" className="site-header-title">
             <span>A H JEWELLERS</span>
           </Link>
@@ -130,7 +130,7 @@ function TestimonialsPage() {
                     <span>{t.location}</span>
                     {t.source === 'google' && (
                       <div className="tp-google-badge">
-                        <img src="/AH-website/google-icon.svg" alt="Google" className="google-icon-sm" />
+                         <img src={`${import.meta.env.BASE_URL}google-icon.svg`} alt="Google" className="google-icon-sm" />
                         <span>Google Review</span>
                       </div>
                     )}

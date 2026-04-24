@@ -44,7 +44,7 @@ function AdminLogin() {
       )}
       <header className="admin-login-header">
         <Link to="/">
-          <img src="/AH-website/logo.png" alt="Logo" />
+           <img src={`${import.meta.env.BASE_URL}logo.png`} alt="Logo" />
         </Link>
         <Link to="/" style={{textDecoration: 'none'}}>
           <span>A H JEWELLERS</span>

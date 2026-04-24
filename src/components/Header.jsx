@@ -11,7 +11,7 @@ function Header() {
      <header>
        <div className="container">
          <Link to="/" className="logo-link">
-           <img src="/AH-website/logo.png" className="logo-img" alt="A H Jewellers Logo" />
+            <img src={`${import.meta.env.BASE_URL}logo.png`} className="logo-img" alt="A H Jewellers Logo" />
            <span className="logo-text">A H JEWELLERS</span>
          </Link>
          <button className="menu-toggle" onClick={toggleMenu} aria-label="Toggle navigation">
