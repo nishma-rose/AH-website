@@ -3,38 +3,64 @@ import { Link } from 'react-router-dom';
 import { db } from '../firebase/config';
 import { collection, getDocs, limit } from 'firebase/firestore';
 import StarRating from './ReviewForm';
+import { fetchGoogleReviews, formatGoogleReviews } from '../services/googlePlaces';
 
 const defaultTestimonials = [
-  { name: 'Ramya S.', location: 'Valliyur', text: 'Excellent quality gold jewellery with transparent pricing. The designs are beautiful and the staff is very helpful. A H Jewellers is our family\'s go-to shop!', initial: 'R', rating: 5 },
-  { name: 'Meena K.', location: 'Tirunelveli', text: 'I bought my wedding jewellery from here and couldn\'t be happier. The purity is guaranteed and the craftsmanship is outstanding. Highly recommended!', initial: 'M', rating: 5 },
-  { name: 'Suresh P.', location: 'Valliyur', text: 'Best jewellery shop in the area. Fair rates, honest dealings, and wonderful collection. The exchange policy is also very customer-friendly.', initial: 'S', rating: 5 }
+  { name: 'Ramya S.', location: 'Valliyur', text: 'Excellent quality gold jewellery with transparent pricing. The designs are beautiful and the staff is very helpful. A H Jewellers is our family\'s go-to shop!', initial: 'R', rating: 5, source: 'firebase' },
+  { name: 'Meena K.', location: 'Tirunelveli', text: 'I bought my wedding jewellery from here and couldn\'t be happier. The purity is guaranteed and the craftsmanship is outstanding. Highly recommended!', initial: 'M', rating: 5, source: 'firebase' },
+  { name: 'Suresh P.', location: 'Valliyur', text: 'Best jewellery shop in the area. Fair rates, honest dealings, and wonderful collection. The exchange policy is also very customer-friendly.', initial: 'S', rating: 5, source: 'firebase' }
 ];
 
 function TestimonialsPage() {
   const [testimonials, setTestimonials] = useState(defaultTestimonials);
+  const [googleAvgRating, setGoogleAvgRating] = useState(0);
+  const [googleTotalRatings, setGoogleTotalRatings] = useState(0);
 
   useEffect(() => {
     const fetchTestimonials = async () => {
-      if (!db) return;
-      try {
-        const snap = await getDocs(collection(db, 'testimonials'));
-        if (snap.size > 0) {
-          const allData = snap.docs.map(d => d.data());
-          const approved = allData.filter(t => t.approved === true);
-          if (approved.length > 0) {
-            setTestimonials(approved);
+      let combined = [...defaultTestimonials];
+      let googleData = null;
+
+      // Fetch from Firebase
+      if (db) {
+        try {
+          const snap = await getDocs(collection(db, 'testimonials'));
+          if (snap.size > 0) {
+            const firebaseTestimonials = snap.docs
+              .map(d => ({ ...d.data(), source: 'firebase' }))
+              .filter(t => t.approved === true);
+            if (firebaseTestimonials.length > 0) {
+              combined = firebaseTestimonials;
+            }
           }
+        } catch (err) {
+          console.error('Error:', err);
         }
-      } catch (err) {
-        console.error('Error:', err);
       }
+
+      // Fetch from Google Places
+      googleData = await fetchGoogleReviews();
+      if (googleData?.reviews?.length > 0) {
+        const googleReviews = formatGoogleReviews(googleData, 5);
+        setGoogleAvgRating(googleData.rating);
+        setGoogleTotalRatings(googleData.totalRatings);
+        combined = [...googleReviews, ...combined];
+      }
+
+      setTestimonials(combined);
     };
+
     fetchTestimonials();
   }, []);
 
-  const avgRating = testimonials.length > 0 
-    ? (testimonials.reduce((sum, t) => sum + (t.rating || 5), 0) / testimonials.length).toFixed(1)
-    : 0;
+  const firebaseAvgRating = testimonials
+    .filter(t => t.source === 'firebase' && t.rating)
+    .length > 0
+    ? (testimonials
+        .filter(t => t.source === 'firebase' && t.rating)
+        .reduce((sum, t) => sum + t.rating, 0) /
+        testimonials.filter(t => t.source === 'firebase' && t.rating).length).toFixed(1)
+    : null;
 
   return (
     <div className="testimonials-page">
@@ -56,11 +82,31 @@ function TestimonialsPage() {
         <div className="container">
           <h1>Customer Reviews</h1>
           <p>See what our customers say about us</p>
-          <div className="tp-rating">
-            <span className="tp-avg">{avgRating}</span>
-            <StarRating value={Math.round(avgRating)} readonly />
-            <span className="tp-count">{testimonials.length} reviews</span>
-          </div>
+
+          {/* Google Rating */}
+          {googleAvgRating > 0 && (
+            <div className="tp-rating-section">
+              <div className="tp-rating-label">Google Rating</div>
+              <div className="tp-rating">
+                <span className="tp-avg">{googleAvgRating}</span>
+                <StarRating value={Math.round(googleAvgRating)} readonly />
+                <span className="tp-count">{googleTotalRatings.toLocaleString()} reviews</span>
+              </div>
+            </div>
+          )}
+
+          {/* Firebase Rating */}
+          {firebaseAvgRating && (
+            <div className="tp-rating-section">
+              <div className="tp-rating-label">Website Reviews</div>
+              <div className="tp-rating">
+                <span className="tp-avg">{firebaseAvgRating}</span>
+                <StarRating value={Math.round(firebaseAvgRating)} readonly />
+                <span className="tp-count">{testimonials.filter(t => t.source === 'firebase').length} reviews</span>
+              </div>
+            </div>
+          )}
+
           <Link to="/reviews/write" className="btn btn-gold">Write a Review</Link>
         </div>
       </section>
@@ -70,12 +116,27 @@ function TestimonialsPage() {
           <h2>All Reviews</h2>
           <div className="tp-grid">
             {testimonials.map((t, i) => (
-              <div key={i} className="tp-card">
+              <div key={i} className={`tp-card ${t.source === 'google' ? 'google-review' : ''}`}>
                 <div className="tp-card-header">
-                  <div className="tp-avatar">{t.initial || t.name?.charAt(0)}</div>
+                  <div className={`tp-avatar ${t.googleProfilePhoto ? 'google-avatar-img' : ''}`}>
+                    {t.googleProfilePhoto ? (
+                      <img src={t.googleProfilePhoto} alt={t.name} />
+                    ) : (
+                      t.initial || t.name?.charAt(0)
+                    )}
+                  </div>
                   <div>
                     <h4>{t.name}</h4>
                     <span>{t.location}</span>
+                    {t.source === 'google' && (
+                      <div className="tp-google-badge">
+                        <img src="/google-icon.svg" alt="Google" className="google-icon-sm" />
+                        <span>Google Review</span>
+                      </div>
+                    )}
+                    {t.googleRelativeTime && (
+                      <span className="tp-relative-time">{t.googleRelativeTime}</span>
+                    )}
                   </div>
                 </div>
                 <div className="tp-card-rating">
