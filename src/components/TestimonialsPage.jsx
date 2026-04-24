@@ -67,7 +67,7 @@ function TestimonialsPage() {
       <header className="site-header">
         <div className="site-header-left">
           <Link to="/">
-            <img src="/logo.png" alt="Logo" />
+            <img src="./logo.png" alt="Logo" />
           </Link>
           <Link to="/" className="site-header-title">
             <span>A H JEWELLERS</span>
