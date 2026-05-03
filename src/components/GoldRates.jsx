@@ -76,7 +76,7 @@ function GoldRates() {
           </div>
           <div className="rate-item--hours" style={{color: 'white'}}>
           <span className="rate-icon">⏰</span>
-          <span>Opening Hours</span><br/>
+          <span style={{fontSize: '12px', color:"gray"}}>Opening Hours</span><br/>
           <strong>09:00 AM - 09:00 PM</strong>
         </div>
         </div>
@@ -109,9 +109,9 @@ function GoldRates() {
           <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i className="fab fa-linkedin-in"></i></a>
           <a href={socialLinks.googleMap} target="_blank" rel="noopener noreferrer" aria-label="Location"><i className="fas fa-map-marker-alt"></i></a>
         </div>
-        <div className="rate-item--hours" style={{color: 'white'}}>
+        <div className="rate-item--hours" style={{color: 'white',fontSize: '12px'}}>
           <span className="rate-icon">⏰</span>
-          <span>Opening Hours</span><br/>
+          <span style={{color:"gray"}}>Opening Hours</span><br/>
           <strong>09:00 AM - 09:00 PM</strong>
         </div>
       </div>
