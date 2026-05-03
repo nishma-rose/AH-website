@@ -2,19 +2,19 @@
   "name": "A H Jewellers | Valliyur",
   "short_name": "AH Jewellers",
   "description": "Trusted Gold & Silver Jewellery Shop in Valliyur, Tamil Nadu",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#1a1a1a",
   "theme_color": "#D4AF37",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "logo.png",
+      "src": "./logo.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo.png",
+      "src": "./logo.png",
       "type": "image/png",
       "sizes": "512x512"
     }
