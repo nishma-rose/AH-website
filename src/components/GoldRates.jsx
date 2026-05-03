@@ -65,7 +65,7 @@ function GoldRates() {
             <div className="rate-item rate-item--time">
             <span className="rate-icon">🕐</span>
             <span>Last Updated</span>
-            <strong>--</strong>
+            <span style={{color: 'white'}}>--</span>
           </div>
           <div className="rate-social">
             <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i className="fab fa-instagram"></i></a>
@@ -100,7 +100,7 @@ function GoldRates() {
           <div className="rate-item rate-item--time">
           <span className="rate-icon">🕐</span>
           <span>Last Updated</span>
-          <strong>{rates.date}</strong>
+          <span style={{color: 'white'}}>{rates.date}</span>
         </div>
         <div className="rate-social">
           <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i className="fab fa-instagram"></i></a>
