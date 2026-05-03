@@ -5,7 +5,7 @@ const ASSETS_TO_CACHE = [
   // You might need a build-time solution to dynamically generate this list,
   // or ensure your build outputs a stable CSS filename (e.g., './index.css').
   './index.html',
-  './logo.png',
+  'logo.png',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css'
 ];
 
