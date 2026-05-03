@@ -53,9 +53,9 @@ function AppContent() {
     };
     window.addEventListener('scroll', navScroll);
 
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(console.log);
-    }
+    // if ('serviceWorker' in navigator) {
+    //   navigator.serviceWorker.register('/sw.js').catch(console.log);
+    // }
 
     return () => {
       observer.disconnect();
