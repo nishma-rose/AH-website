@@ -22,6 +22,9 @@ self.addEventListener('install', (event) => {
 // Fetch Event: Serve from cache if available, otherwise fetch from network
 // and cache the network response for future use.
 self.addEventListener('fetch', (event) => {
+  // Bypass service worker cache for gold rates API to ensure instant updates
+  if (event.request.url.includes('npoint.io')) return;
+
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
