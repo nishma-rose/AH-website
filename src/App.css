@@ -115,7 +115,7 @@ nav .admin-link { color: var(--gold); font-size: 0.85rem; }
 .rate-banner {
   background: linear-gradient(135deg, #0a0a0a 0%, #1a1205 50%, #0a0a0a 100%);
   padding: 1rem 0; position: fixed; top: 0; left: 0; width: 100%; z-index: 1001; overflow: hidden;
-  display: flex; align-items: center;
+   align-items: center;
   white-space: nowrap;
 }
 .rate-banner .container {
@@ -150,13 +150,20 @@ nav .admin-link { color: var(--gold); font-size: 0.85rem; }
   filter: drop-shadow(0 2px 4px rgba(212,175,55,0.3));
 }
 .rate-item span {
-  display: inline; font-size: 0.6rem; color: var(--gray);
+  display: inline; font-size: 0.95rem; color: var(--gray);
   letter-spacing: 0.5px; margin: 0; margin-right: 0.2rem; font-weight: 500;
 }
 .rate-item strong {
-  font-size: 1rem; color: var(--gold); display: inline;
-  text-shadow: 0 0 20px rgba(212,175,55,0.2);
+  font-size: 1.5rem; color: var(--gold); display: inline-block;
+  text-shadow: 0 0 10px rgba(212,175,55,0.3);
+  animation: sparkle 2.5s infinite ease-in-out;
 }
+
+@keyframes sparkle {
+  0%, 100% { text-shadow: 0 0 5px rgba(212,175,55,0.2); transform: scale(1); }
+  50% { text-shadow: 0 0 15px rgba(212,175,55,0.9), 0 0 25px rgba(255,255,255,0.5), 0 0 35px rgba(212,175,55,0.4); transform: scale(1.08); }
+}
+
 .rate-item.rate-item--gold strong { color: #FFD700; }
 .rate-item.rate-item--silver strong { color: #C0C0C0; }
 .rate-item.rate-item--time { max-width: none; }
@@ -311,9 +318,9 @@ nav .admin-link { color: var(--gold); font-size: 0.85rem; }
 
 .contact-section { background: var(--light); }
 .contact-grid { 
-  display: grid; 
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
-  gap: 3rem; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .contact-details { display: flex; flex-direction: column; gap: 1.8rem; }
 .contact-item { display: flex; gap: 1rem; align-items: flex-start; }
@@ -382,7 +389,7 @@ footer { background: var(--black); color: var(--white); padding: 3rem 0 1.5rem; 
 }
 
 @media (max-width: 1100px) and (min-width: 769px) {
-  .hero { padding-top: 14rem; }
+  .hero { padding-top: 19rem; }
 }
 
 @media (max-width: 768px) {
@@ -399,7 +406,7 @@ footer { background: var(--black); color: var(--white); padding: 3rem 0 1.5rem; 
   nav ul.active { display: flex; }
   nav ul li a { display: block; padding: 0.8rem 0; color: #fff; }
 
-  .hero { min-height: 90vh; background-attachment: scroll; padding-top: 19rem; }
+  .hero { min-height: 90vh; background-attachment: scroll; padding-top: 23rem; }
   .hero-content h1 { font-size: 2.4rem; }
   .hero-content p { font-size: 1rem; }
 
@@ -408,11 +415,11 @@ footer { background: var(--black); color: var(--white); padding: 3rem 0 1.5rem; 
   .rate-item { 
     padding: 0.4rem 0.8rem; min-width: auto; border: 1px solid rgba(212,175,55,0.3); 
     background: linear-gradient(145deg, rgba(212,175,55,0.08) 0%, rgba(212,175,55,0.02) 100%);
-    border-radius: 6px; display: flex; align-items: center;
+    border-radius: 6px; display: flex; align-items: center;justify-content: center;
   }
   .rate-item .rate-icon { font-size: 0.85rem; margin-right: 0.2rem; }
-  .rate-item span { display: inline; font-size: 0.6rem; }
-  .rate-item strong { font-size: 0.85rem; }
+  .rate-item span { display: inline; font-size: 0.85rem; }
+  .rate-item strong { font-size: 1.2rem; }
   .rate-item.rate-item--gold::after { display: none; }
   .rate-social { width: 100%; justify-content: center; margin-top: 0.4rem; gap: 1rem; }
   .rate-social a { font-size: 1rem; }

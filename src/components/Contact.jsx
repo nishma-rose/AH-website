@@ -56,13 +56,6 @@ function Contact() {
               </div>
             </div>
             <div className="contact-item">
-              <div className="icon-box"><i className="fas fa-clock"></i></div>
-              <div>
-                <h4>Opening Hours</h4>
-                <p>Monday - Sunday<br/>09:00 AM - 09:00 PM</p>
-              </div>
-            </div>
-            <div className="contact-item">
               <div className="icon-box"><i className="fab fa-whatsapp"></i></div>
               <div>
                 <h4>WhatsApp</h4>
@@ -70,7 +63,7 @@ function Contact() {
               </div>
             </div>
           </div>
-          <div className="contact-form fade-up">
+          {/* <div className="contact-form fade-up">
             <form onSubmit={handleSubmit}>
               <input 
                 type="text" 
@@ -96,7 +89,7 @@ function Contact() {
                 {status === 'sending' ? 'Sending...' : status === 'success' ? 'Sent!' : 'Send Message'}
               </button>
             </form>
-          </div>
+          </div> */}
         </div>
         <div className="map-wrapper fade-up" style={{marginTop: '2rem'}}>
           <iframe 

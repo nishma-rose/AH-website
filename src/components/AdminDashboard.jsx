@@ -344,9 +344,10 @@ function RatesManager({ rates, setRates, onSave, showNotification, apiUrl, onSav
     }
     setFetchFromApi(true);
     try {
-      const response = await fetch(urlToFetch, {
+      const response = await fetch(`${urlToFetch}${urlToFetch.includes('?') ? '&' : '?'}nocache=${Date.now()}`, {
         mode: 'cors',
-        headers: { 'Accept': 'application/json' }
+        cache: 'no-store',
+        headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' }
       });
       if (!response.ok) {
         throw new Error('API response not OK (' + response.status + ')');

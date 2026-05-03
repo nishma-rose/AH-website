@@ -25,7 +25,11 @@ function GoldRates() {
           }
         }
         
-        const response = await fetch(apiUrl);
+        // Fetch with no-store and timestamp to bypass any browser or proxy cache
+        const response = await fetch(`${apiUrl}?nocache=${Date.now()}`, {
+          cache: 'no-store',
+          headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+        });
         const data = await response.json();
         const goldRate = data.Gold916 || data.gold;
         const silverRate = data.Silver || data.silver;
@@ -47,7 +51,7 @@ function GoldRates() {
   if (!rates) {
     return (
       <div id="rates" className="rate-banner">
-        <div className="container">
+        <div className="container" style={{maxWidth: '1600px'}}>
           <div className="rate-item rate-item--gold">
             <span className="rate-icon">🥇</span>
             <span>Gold 916 / Gram</span>
@@ -58,7 +62,7 @@ function GoldRates() {
             <span>Silver / Gram</span>
             <strong>₹ --</strong>
           </div>
-          <div className="rate-item rate-item--time">
+            <div className="rate-item rate-item--time">
             <span className="rate-icon">🕐</span>
             <span>Last Updated</span>
             <strong>--</strong>
@@ -70,6 +74,11 @@ function GoldRates() {
             <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i className="fab fa-linkedin-in"></i></a>
             <a href={socialLinks.googleMap} target="_blank" rel="noopener noreferrer" aria-label="Location"><i className="fas fa-map-marker-alt"></i></a>
           </div>
+          <div className="rate-item--hours" style={{color: 'white'}}>
+          <span className="rate-icon">⏰</span>
+          <span>Opening Hours</span><br/>
+          <strong>09:00 AM - 09:00 PM</strong>
+        </div>
         </div>
       </div>
     );
@@ -77,7 +86,7 @@ function GoldRates() {
 
   return (
     <div id="rates" className="rate-banner">
-      <div className="container">
+      <div className="container" style={{maxWidth: '1600px'}}>
         <div className="rate-item rate-item--gold">
           <span className="rate-icon">🥇</span>
           <span>Gold 916 / Gram</span>
@@ -88,7 +97,7 @@ function GoldRates() {
           <span>Silver / Gram</span>
           <strong>₹ {rates.silver || '--'}</strong>
         </div>
-        <div className="rate-item rate-item--time">
+          <div className="rate-item rate-item--time">
           <span className="rate-icon">🕐</span>
           <span>Last Updated</span>
           <strong>{rates.date}</strong>
@@ -99,6 +108,11 @@ function GoldRates() {
           <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i className="fab fa-youtube"></i></a>
           <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i className="fab fa-linkedin-in"></i></a>
           <a href={socialLinks.googleMap} target="_blank" rel="noopener noreferrer" aria-label="Location"><i className="fas fa-map-marker-alt"></i></a>
+        </div>
+        <div className="rate-item--hours" style={{color: 'white'}}>
+          <span className="rate-icon">⏰</span>
+          <span>Opening Hours</span><br/>
+          <strong>09:00 AM - 09:00 PM</strong>
         </div>
       </div>
     </div>
