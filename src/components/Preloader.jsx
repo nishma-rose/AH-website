@@ -1,4 +1,5 @@
 import React from 'react';
+import logo from '../assets/logo.png';
 
 const Preloader = () => {
   return (
@@ -25,7 +26,7 @@ const Preloader = () => {
       <div style={styles.container} className="preloader-animate-in">
         <div className="logo-pulse">
           <img 
-            src={`${import.meta.env.BASE_URL}logo.png`} 
+            src={logo} 
             alt="A H Jewellers" 
             style={styles.logo} 
           />

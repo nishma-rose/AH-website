@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { db } from '../firebase/config';
 import { collection, addDoc } from 'firebase/firestore';
 import { StarRating, ReviewForm } from './ReviewForm';
+import logo from '../assets/logo.png';
 
 function WriteReviewPage() {
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ function WriteReviewPage() {
       <header className="site-header">
         <div className="site-header-left">
           <Link to="/">
-              <img src={`${import.meta.env.BASE_URL}logo.png`} alt="Logo" />
+              <img src={logo} alt="Logo" />
           </Link>
           <Link to="/" className="site-header-title">
             <span>A H JEWELLERS</span>
