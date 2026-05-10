@@ -1,4 +1,4 @@
-import { useEffect, lazy, Suspense } from 'react';
+import { useEffect, lazy, Suspense, useState } from 'react';
 import { HashRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -9,6 +9,7 @@ import Collections from './components/Collections';
 import Testimonials from './components/Testimonials';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import Preloader from './components/Preloader';
 import './App.css';
 
 const AdminLogin = lazy(() => import('./components/AdminLogin'));
@@ -87,7 +88,19 @@ function AppContent() {
 }
 
 function App() {
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+
+  useEffect(() => {
+    // Show the branding animation for 2.5 seconds
+    const timer = setTimeout(() => {
+      setIsInitialLoading(false);
+    }, 2500);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
+    <>
+      {isInitialLoading && <Preloader />}
     <Router>
       <Suspense fallback={<Loading />}>
         <Routes>
@@ -99,6 +112,7 @@ function App() {
         </Routes>
       </Suspense>
     </Router>
+    </>
   );
 }
 
