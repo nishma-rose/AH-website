@@ -134,7 +134,7 @@ function Testimonials() {
         </div>
 
         <div className="section-cta">
-          <Link to="/reviews" className="btn btn-outline">View All Reviews</Link>
+          <Link to="/reviews" className="btn btn-gold">View All Reviews</Link>
           <Link to="/reviews/write" className="btn btn-gold">Write a Review</Link>
         </div>
       </div>

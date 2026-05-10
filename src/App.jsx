@@ -1,5 +1,7 @@
 import { useEffect, lazy, Suspense, useState } from 'react';
 import { HashRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { db } from './firebase/config';
+import { collection, getDocs } from 'firebase/firestore';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import GoldRates from './components/GoldRates';
@@ -17,11 +19,20 @@ const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
 const TestimonialsPage = lazy(() => import('./components/TestimonialsPage'));
 const WriteReviewPage = lazy(() => import('./components/WriteReviewPage'));
 
+const DEFAULT_HERO_SLIDES = [
+  {
+    badge: 'Pure Elegance',
+    title: 'Exquisite Gold <em>Collections</em>',
+    subtitle: 'Discover timeless craftsmanship and purity in every piece. Trusted by families since generations.',
+    image: 'https://images.unsplash.com/photo-1617038224531-16d69b990921?auto=format&fit=crop&w=1950&q=80'
+  }
+];
+
 function Loading() {
   return <div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>;
 }
 
-function AppContent() {
+function AppContent({ heroSlides }) {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -72,7 +83,7 @@ function AppContent() {
         <GoldRates />
         <Header />
       </div>
-      <Hero />
+      <Hero slides={heroSlides} />
       <Features />
       <Collections />
       <About />
@@ -85,29 +96,50 @@ function AppContent() {
 
 function App() {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [heroSlides, setHeroSlides] = useState([]);
 
   useEffect(() => {
-    // Show the branding animation for 2.5 seconds
-    const timer = setTimeout(() => {
-      setIsInitialLoading(false);
-    }, 2500);
-    return () => clearTimeout(timer);
+    const loadInitialData = async () => {
+      const startTime = Date.now();
+      try {
+        if (db) {
+          const snap = await getDocs(collection(db, 'hero_slides'));
+          if (snap.size > 0) {
+            setHeroSlides(snap.docs.map(d => d.data()));
+          } else {
+            setHeroSlides(DEFAULT_HERO_SLIDES);
+          }
+        } else {
+          setHeroSlides(DEFAULT_HERO_SLIDES);
+        }
+      } catch (err) {
+        console.error("Initial data load error:", err);
+        setHeroSlides(DEFAULT_HERO_SLIDES);
+      } finally {
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.max(0, 2500 - elapsed);
+        setTimeout(() => setIsInitialLoading(false), remaining);
+      }
+    };
+    loadInitialData();
   }, []);
 
   return (
     <>
       {isInitialLoading && <Preloader />}
-    <Router>
-      <Suspense fallback={<Loading />}>
-        <Routes>
-          <Route path="/admin" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/reviews" element={<TestimonialsPage />} />
-          <Route path="/reviews/write" element={<WriteReviewPage />} />
-          <Route path="/*" element={<AppContent />} />
-        </Routes>
-      </Suspense>
-    </Router>
+      {!isInitialLoading && (
+        <Router>
+          <Suspense fallback={<Loading />}>
+            <Routes>
+              <Route path="/admin" element={<AdminLogin />} />
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              <Route path="/reviews" element={<TestimonialsPage />} />
+              <Route path="/reviews/write" element={<WriteReviewPage />} />
+              <Route path="/*" element={<AppContent heroSlides={heroSlides} />} />
+            </Routes>
+          </Suspense>
+        </Router>
+      )}
     </>
   );
 }

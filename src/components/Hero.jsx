@@ -1,40 +1,17 @@
 import { useState, useEffect } from 'react';
-import { db } from '../firebase/config';
-import { collection, getDocs } from 'firebase/firestore';
 
-const defaultSlides = [
-  {
-    badge: 'Pure Elegance',
-    title: 'Exquisite Gold <em>Collections</em>',
-    subtitle: 'Discover timeless craftsmanship and purity in every piece. Trusted by families since generations.',
-    image: 'https://images.unsplash.com/photo-1617038224531-16d69b990921?auto=format&fit=crop&w=1950&q=80'
-  }
-];
-
-function Hero() {
-  const [slides, setSlides] = useState(defaultSlides);
-  const [loading, setLoading] = useState(true);
+function Hero({ slides }) {
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
-    const fetchSlides = async () => {
-      if (!db) { setLoading(false); return; }
-      const snap = await getDocs(collection(db, 'hero_slides'));
-      if (snap.size > 0) {
-        setSlides(snap.docs.map(d => d.data()));
-      }
-      setLoading(false);
-    };
-    fetchSlides();
-  }, []);
-
-  useEffect(() => {
-    if (slides.length <= 1) return;
+    if (!slides || slides.length <= 1) return;
     const timer = setInterval(() => {
       setCurrent(prev => (prev === slides.length - 1 ? 0 : prev + 1));
     }, 5000);
     return () => clearInterval(timer);
   }, [slides]);
+
+  if (!slides || slides.length === 0) return null;
 
   return (
     <section id="home" className="hero">
