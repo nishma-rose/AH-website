@@ -1,6 +1,6 @@
 function About() {
   return (
-    <section id="about" className="section">
+    <section id="about" className="section" style={{ backgroundColor: 'beige' }}>
       <div className="container">
         <div className="about-grid">
           <div className="about-image fade-up">

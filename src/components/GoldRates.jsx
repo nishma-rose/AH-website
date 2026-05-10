@@ -7,7 +7,7 @@ const socialLinks = {
   facebook: 'https://www.facebook.com/share/18DDtX4BxC/',
   youtube: 'https://youtube.com/@ahjewellers?si=75d-fPDgEbta89cL',
   linkedin: 'https://www.linkedin.com/company/ah-jewellers',
-  googleMap: 'https://maps.app.goo.gl/xyz123'
+  googleMap: 'https://www.google.com/maps/place/AH+JEWELLERS/@8.3879538,77.6096128,17z/data=!3m1!4b1!4m6!3m5!1s0x3b0467ea7f7d91d9:0xec2d8906723f2c2c!8m2!3d8.3879538!4d77.6096128!16s%2Fg%2F11vytd0pfv?hl=en&entry=ttu&g_ep=EgoyMDI2MDUwNi4wIKXMDSoASAFQAw%3D%3D'
 };
 
 function GoldRates() {

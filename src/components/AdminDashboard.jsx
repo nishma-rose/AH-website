@@ -17,8 +17,9 @@ function useNotification() {
 }
 
 function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState('collections');
+  const [activeTab, setActiveTab] = useState('hero');
   const [collections, setCollections] = useState([]);
+  const [heroSlides, setHeroSlides] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
   const [pendingReviews, setPendingReviews] = useState([]);
   const [rates, setRates] = useState({ gold: '', silver: '' });
@@ -45,6 +46,9 @@ function AdminDashboard() {
       const collSnap = await getDocs(collection(db, 'collections'));
       setCollections(collSnap.docs.map(d => ({ id: d.id, ...d.data() })));
       
+      const heroSnap = await getDocs(collection(db, 'hero_slides'));
+      setHeroSlides(heroSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+
       const testSnap = await getDocs(collection(db, 'testimonials'));
       const allTestimonials = testSnap.docs.map(d => ({ id: d.id, ...d.data() }));
       setTestimonials(allTestimonials.filter(t => t.approved === true));
@@ -86,6 +90,31 @@ function AdminDashboard() {
     await deleteDoc(doc(db, 'collections', id));
     fetchData();
     showNotification('Collection deleted', 'error');
+  };
+
+  const addHeroSlide = async (item) => {
+    if (!db) return;
+    setSaving(true);
+    await addDoc(collection(db, 'hero_slides'), item);
+    fetchData();
+    setSaving(false);
+    showNotification('Hero slide added!');
+  };
+
+  const deleteHeroSlide = async (id) => {
+    if (!db) return;
+    await deleteDoc(doc(db, 'hero_slides', id));
+    fetchData();
+    showNotification('Hero slide removed', 'error');
+  };
+
+  const updateHeroSlide = async (id, item) => {
+    if (!db) return;
+    setSaving(true);
+    await updateDoc(doc(db, 'hero_slides', id), item);
+    fetchData();
+    setSaving(false);
+    showNotification('Hero slide updated!');
   };
 
   const addTestimonial = async (item) => {
@@ -175,6 +204,7 @@ function AdminDashboard() {
       </header>
       
       <nav className="admin-tabs">
+        <button className={activeTab === 'hero' ? 'active' : ''} onClick={() => setActiveTab('hero')}>Hero Slider</button>
         <button className={activeTab === 'collections' ? 'active' : ''} onClick={() => setActiveTab('collections')}>Collections</button>
         <button className={activeTab === 'testimonials' ? 'active' : ''} onClick={() => setActiveTab('testimonials')}>
           Testimonials {pendingReviews.length > 0 && <span className="badge">{pendingReviews.length}</span>}
@@ -183,6 +213,14 @@ function AdminDashboard() {
       </nav>
 
       <main className="admin-content">
+        {activeTab === 'hero' && (
+          <HeroSlideManager 
+            slides={heroSlides} 
+            onAdd={addHeroSlide} 
+            onDelete={deleteHeroSlide} 
+            onUpdate={updateHeroSlide} 
+          />
+        )}
         {activeTab === 'collections' && (
           <CollectionManager collections={collections} onAdd={addCollection} onDelete={deleteCollection} />
         )}
@@ -200,6 +238,87 @@ function AdminDashboard() {
           <RatesManager rates={rates} setRates={setRates} onSave={updateRates} showNotification={showNotification} apiUrl={ratesApiUrl} onSaveApiUrl={saveRatesApiUrl} />
         )}
       </main>
+    </div>
+  );
+}
+
+function HeroSlideManager({ slides, onAdd, onDelete, onUpdate }) {
+  const [form, setForm] = useState({ 
+    title: '',
+    subtitle: '', 
+    image: '', 
+    badge: 'Pure Elegance',
+    imageFit: 'cover',
+    imagePosition: 'center'
+  });
+  const [editingId, setEditingId] = useState(null);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (editingId) {
+      onUpdate(editingId, form);
+      setEditingId(null);
+    } else {
+      onAdd(form);
+    }
+    setForm({ title: '', subtitle: '', image: '', badge: 'Pure Elegance', imageFit: 'cover', imagePosition: 'center' });
+  };
+  const startEdit = (slide) => {
+    setForm({
+      title: slide.title,
+      subtitle: slide.subtitle,
+      image: slide.image,
+      badge: slide.badge,
+      imageFit: slide.imageFit || 'cover',
+      imagePosition: slide.imagePosition || 'center'
+    });
+    setEditingId(slide.id);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  return (
+    <div className="manager">
+      <h2>Manage Hero Slides</h2>
+      <form onSubmit={handleSubmit} className="add-form">
+        <input placeholder="Badge (e.g. Pure Elegance)" value={form.badge} onChange={e => setForm({...form, badge: e.target.value})} />
+        <input placeholder="Main Title (use <em> for gold text) *" value={form.title} onChange={e => setForm({...form, title: e.target.value})} required />
+        <input placeholder="Subtitle" value={form.subtitle} onChange={e => setForm({...form, subtitle: e.target.value})} />
+        <input placeholder="Gold Image URL *" value={form.image} onChange={e => setForm({...form, image: e.target.value})} required />
+        <input placeholder="Image Fit (cover, contain, or e.g. 100% 80%)" value={form.imageFit} onChange={e => setForm({...form, imageFit: e.target.value})} />
+        <input placeholder="Image Position (center, top, or e.g. 50% 20%)" value={form.imagePosition} onChange={e => setForm({...form, imagePosition: e.target.value})} />
+        <div style={{ display: 'flex', gap: '1rem', width: '100%' }}>
+          <button type="submit" className="btn btn-gold">
+            {editingId ? 'Update Slide' : 'Add Slide'}
+          </button>
+          {editingId && (
+            <button 
+              type="button" 
+              className="btn" 
+              style={{ background: "#e74c3c",
+    color: "white"}} 
+              onClick={() => {
+                setEditingId(null);
+                setForm({ title: '', subtitle: '', image: '', badge: 'Pure Elegance', imageFit: 'cover', imagePosition: 'center' });
+              }}
+            >
+              Cancel
+            </button>
+          )}
+        </div>
+      </form>
+      <div className="items-grid">
+        {slides.map(s => (
+          <div key={s.id} className="item-card">
+            <img src={s.image} alt={s.title} />
+            <h3>{s.title.replace(/<[^>]*>?/gm, '')}</h3>
+            <p>{s.subtitle}</p>
+            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
+              <button onClick={() => startEdit(s)} className="btn btn-outline" style={{ flex: 1, padding: '0.5rem', fontSize: '0.85rem' }}>Edit</button>
+              <button onClick={() => onDelete(s.id)} className="delete-btn" style={{ flex: 1 }}>Delete</button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

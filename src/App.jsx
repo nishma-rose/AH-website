@@ -42,20 +42,25 @@ function AppContent() {
 
     const sections = document.querySelectorAll('section[id]');
     const navScroll = () => {
-      const scrollY = window.scrollY + 100;
+      const scrollY = window.scrollY + 130;
       sections.forEach((section) => {
         const top = section.offsetTop;
         const height = section.offsetHeight;
         const id = section.getAttribute('id');
-        const link = document.querySelector(`nav a[href="#${id}"]`);
-        if (link) link.style.color = (scrollY >= top && scrollY < top + height) ? '#D4AF37' : '';
+        
+        // Map the 'testimonials' section to the 'Reviews' link
+        let selector = `nav a[href="#${id}"]`;
+        if (id === 'testimonials') {
+          selector = 'nav a[href*="reviews"]';
+        }
+        
+        const link = document.querySelector(selector);
+        if (link) {
+          link.classList.toggle('active-nav', scrollY >= top && scrollY < top + height);
+        }
       });
     };
     window.addEventListener('scroll', navScroll);
-
-    // if ('serviceWorker' in navigator) {
-    //   navigator.serviceWorker.register('/sw.js').catch(console.log);
-    // }
 
     return () => {
       observer.disconnect();
@@ -71,9 +76,9 @@ function AppContent() {
         <Header />
       </div>
       <Hero />
-      <About />
       <Features />
       <Collections />
+      <About />
       <Testimonials />
       <Contact />
       <Footer />

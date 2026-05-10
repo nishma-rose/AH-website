@@ -21,8 +21,8 @@ function Header() {
          <nav>
            <ul id="nav-menu" className={menuOpen ? 'active' : ''}>
              <li><a href="#home" onClick={closeMenu}>Home</a></li>
-             <li><a href="#about" onClick={closeMenu}>About</a></li>
              <li><a href="#collections" onClick={closeMenu}>Collections</a></li>
+             <li><a href="#about" onClick={closeMenu}>About</a></li>
              <li><Link to="/reviews" onClick={closeMenu}>Reviews</Link></li>
              <li><a href="#contact" onClick={closeMenu}>Contact</a></li>
              {/* <li><Link to="/admin" className="admin-link" onClick={closeMenu}>Admin</Link></li> */}
