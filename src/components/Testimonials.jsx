@@ -100,7 +100,7 @@ function Testimonials() {
   };
 
   return (
-    <section id="testimonials" className="section testimonials-section">
+    <section id="reviews" className="section testimonials-section">
       <div className="container">
         <div className="section-header">
           <h2>What Our <span>Customers</span> Say</h2>

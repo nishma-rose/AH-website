@@ -43,17 +43,13 @@ function AppContent() {
 
     const sections = document.querySelectorAll('section[id]');
     const navScroll = () => {
-      const scrollY = window.scrollY + 130;
+      const scrollY = window.scrollY + 160;
       sections.forEach((section) => {
         const top = section.offsetTop;
         const height = section.offsetHeight;
         const id = section.getAttribute('id');
         
-        // Map the 'testimonials' section to the 'Reviews' link
-        let selector = `nav a[href="#${id}"]`;
-        if (id === 'testimonials') {
-          selector = 'nav a[href*="reviews"]';
-        }
+        const selector = `nav a[href="#${id}"]`;
         
         const link = document.querySelector(selector);
         if (link) {

@@ -7,7 +7,7 @@ function Features() {
   ];
 
   return (
-    <section className="section features-section">
+    <section id="features" className="section features-section">
       <div className="container">
         <div className="section-header">
           <h2>Why Choose <span>Us</span></h2>

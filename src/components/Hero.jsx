@@ -53,7 +53,7 @@ function Hero() {
       </div>
       
       <div className="container" style={{ position: 'relative', zIndex: 2, top:"30px" }}>
-        <div className="hero-content">
+        <div className="hero-content" key={current}>
           <span className="hero-badge">{slides[current].badge}</span>
           <h1 dangerouslySetInnerHTML={{ __html: slides[current].title }}></h1>
           <p>{slides[current].subtitle}</p>
