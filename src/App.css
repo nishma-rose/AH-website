@@ -391,9 +391,10 @@ nav a.active-nav::after {
 
 .contact-section { background: var(--light); }
 .contact-grid { 
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
     align-items: center;
-    justify-content: center;
 }
 .contact-details { display: flex; flex-direction: column; gap: 1.8rem; }
 .contact-item { display: flex; gap: 1rem; align-items: flex-start; }
