@@ -191,6 +191,7 @@ function AdminDashboard() {
     setSaving(true);
     await setDoc(doc(db, 'config', 'logo'), { url, updatedAt: new Date().toISOString() });
     setLogoUrl(url);
+    localStorage.setItem('ah_logo_cache', url); // Sync cache when admin updates logo
     setSaving(false);
     showNotification('Logo updated successfully!');
   };

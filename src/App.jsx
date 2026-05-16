@@ -126,7 +126,8 @@ function AppContent({ heroSlides, logoUrl }) {
 function App() {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [heroSlides, setHeroSlides] = useState([]);
-  const [logoUrl, setLogoUrl] = useState('');
+  // Load logo from cache immediately to prevent delay in Preloader on return visits
+  const [logoUrl, setLogoUrl] = useState(localStorage.getItem('ah_logo_cache') || '');
 
   useEffect(() => {
     if (logoUrl) {
@@ -147,11 +148,17 @@ function App() {
       const startTime = Date.now();
       try {
         if (db) {
-          // Fetch hero slides and logo in parallel to avoid sequential delays
-          const [heroSnap, logoSnap] = await Promise.all([
-            getDocs(collection(db, 'hero_slides')),
-            getDoc(doc(db, 'config', 'logo'))
-          ]);
+          // Fetch logo independently and update state as soon as it arrives
+          // This ensures the Preloader updates without waiting for the Hero Slides query
+          const logoPromise = getDoc(doc(db, 'config', 'logo')).then((logoSnap) => {
+            if (logoSnap.exists()) {
+              const remoteLogo = logoSnap.data().url;
+              setLogoUrl(remoteLogo);
+              localStorage.setItem('ah_logo_cache', remoteLogo); // Cache for next load
+            }
+          });
+
+          const heroSnap = await getDocs(collection(db, 'hero_slides'));
 
           if (!heroSnap.empty) {
             setHeroSlides(heroSnap.docs.map(d => d.data()));
@@ -159,9 +166,8 @@ function App() {
             setHeroSlides(DEFAULT_HERO_SLIDES);
           }
 
-          if (logoSnap.exists()) {
-            setLogoUrl(logoSnap.data().url);
-          }
+          // Ensure logo fetch is finalized before ending the preloader
+          await logoPromise;
         } else {
           setHeroSlides(DEFAULT_HERO_SLIDES);
         }
