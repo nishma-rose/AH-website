@@ -50,21 +50,23 @@ function GoldRates({ logoUrl }) {
             <img src={logoUrl || logo} className="logo-img" alt="Logo" />
             <span className="logo-text">A H JEWELLERS</span>
           </Link>
-          <div className="rate-item rate-item--gold">
-            <span className="rate-icon">🥇</span>
-            <span>Gold 916 / Gram</span>
-            <strong>₹ --</strong>
-          </div>
-          <div className="rate-item rate-item--silver">
-            <span className="rate-icon">🥈</span>
-            <span>Silver / Gram</span>
-            <strong>₹ --</strong>
-          </div>
+          <div className="rates-scroller">
+            <div className="rate-item rate-item--gold">
+              <span className="rate-icon">🥇</span>
+              <span>Gold 916 / Gram</span>
+              <strong>₹ --</strong>
+            </div>
+            <div className="rate-item rate-item--silver">
+              <span className="rate-icon">🥈</span>
+              <span>Silver / Gram</span>
+              <strong>₹ --</strong>
+            </div>
             <div className="rate-item rate-item--time">
-            <span className="rate-icon">🕐</span>
-            <span>Last Updated</span>
-            <span style={{color: 'white'}}>--</span>
-        </div>
+              <span className="rate-icon">🕐</span>
+              <span>Last Updated</span>
+              <span style={{color: 'white'}}>--</span>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -77,6 +79,7 @@ function GoldRates({ logoUrl }) {
           <img src={logoUrl || logo} className="logo-img" alt="Logo" />
           <span className="logo-text">A H JEWELLERS</span>
         </Link>
+      <div className="rates-scroller">
         <div className="rate-item rate-item--gold">
           <span className="rate-icon">🥇</span>
           <span>Gold 916 / Gram</span>
@@ -91,6 +94,7 @@ function GoldRates({ logoUrl }) {
           <span className="rate-icon">🕐</span>
           <span>Last Updated</span>
           <span style={{color: 'white'}}>{rates.date}</span>
+        </div>
         </div>
       </div>
     </div>

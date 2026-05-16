@@ -30,7 +30,7 @@ function Testimonials() {
 
   useEffect(() => {
     const fetchTestimonials = async () => {
-      let combined = [];
+      let combined = [...defaultTestimonials];
 
       // Fetch from Firebase
       if (db) {
@@ -41,7 +41,7 @@ function Testimonials() {
               .map(d => ({ id: d.id, ...d.data(), source: 'firebase' }))
               .filter(t => t.approved === true);
             if (firebaseTestimonials.length > 0) {
-              combined = [...firebaseTestimonials];
+              combined = [...combined, ...firebaseTestimonials];
             }
           }
         } catch (err) {
@@ -53,10 +53,14 @@ function Testimonials() {
       const googleData = await fetchGoogleReviews();
       if (googleData?.reviews?.length > 0) {
         const googleReviews = formatGoogleReviews(googleData, googleData.reviews.length);
-        combined = [...googleReviews, ...combined];
+        combined = [...combined, ...googleReviews];
       }
 
-      if (combined.length === 0) combined = defaultTestimonials;
+      // Fisher-Yates shuffle for true randomness on each load
+      for (let i = combined.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [combined[i], combined[j]] = [combined[j], combined[i]];
+      }
 
       setTestimonials(combined);
       setLoading(false);
