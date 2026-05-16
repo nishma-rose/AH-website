@@ -364,9 +364,9 @@ function HeroSlideManager({ slides, onAdd, onDelete, onUpdate }) {
     <div className="manager">
       <h2>Manage Hero Slides</h2>
       <form onSubmit={handleSubmit} className="add-form">
-        <input placeholder="Badge (e.g. Pure Elegance)" value={form.badge} onChange={e => setForm({...form, badge: e.target.value})} />
-        <input placeholder="Main Title (use <em> for gold text) *" value={form.title} onChange={e => setForm({...form, title: e.target.value})} required />
-        <input placeholder="Subtitle" value={form.subtitle} onChange={e => setForm({...form, subtitle: e.target.value})} />
+        {/* <input placeholder="Badge (e.g. Pure Elegance)" value={form.badge} onChange={e => setForm({...form, badge: e.target.value})} />
+        <input placeholder="Main Title (use <em> for gold text)" value={form.title} onChange={e => setForm({...form, title: e.target.value})} />
+        <input placeholder="Subtitle" value={form.subtitle} onChange={e => setForm({...form, subtitle: e.target.value})} /> */}
         <input placeholder="Gold Image URL *" value={form.image} onChange={e => setForm({...form, image: e.target.value})} required />
         <input placeholder="Image Fit (cover, contain, or e.g. 100% 80%)" value={form.imageFit} onChange={e => setForm({...form, imageFit: e.target.value})} />
         <input placeholder="Image Position (center, top, or e.g. 50% 20%)" value={form.imagePosition} onChange={e => setForm({...form, imagePosition: e.target.value})} />

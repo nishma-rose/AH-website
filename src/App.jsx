@@ -147,14 +147,18 @@ function App() {
       const startTime = Date.now();
       try {
         if (db) {
-          const snap = await getDocs(collection(db, 'hero_slides'));
-          if (snap.size > 0) {
-            setHeroSlides(snap.docs.map(d => d.data()));
+          // Fetch hero slides and logo in parallel to avoid sequential delays
+          const [heroSnap, logoSnap] = await Promise.all([
+            getDocs(collection(db, 'hero_slides')),
+            getDoc(doc(db, 'config', 'logo'))
+          ]);
+
+          if (!heroSnap.empty) {
+            setHeroSlides(heroSnap.docs.map(d => d.data()));
           } else {
             setHeroSlides(DEFAULT_HERO_SLIDES);
           }
 
-          const logoSnap = await getDoc(doc(db, 'config', 'logo'));
           if (logoSnap.exists()) {
             setLogoUrl(logoSnap.data().url);
           }
@@ -166,7 +170,8 @@ function App() {
         setHeroSlides(DEFAULT_HERO_SLIDES);
       } finally {
         const elapsed = Date.now() - startTime;
-        const remaining = Math.max(0, 2500 - elapsed);
+        // Reduced minimum display time to 1500ms for a snappier user experience
+        const remaining = Math.max(0, 1500 - elapsed);
         setTimeout(() => setIsInitialLoading(false), remaining);
       }
     };

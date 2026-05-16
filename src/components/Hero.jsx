@@ -88,12 +88,12 @@ function Hero({ slides }) {
           <span className="hero-badge">{slides[current].badge}</span>
           <h1 dangerouslySetInnerHTML={{ __html: slides[current].title }}></h1>
           <p>{slides[current].subtitle}</p>
-          <div className="hero-buttons">
+          {/* <div className="hero-buttons">
             <Link to="/collections" className="btn btn-gold">View Collections</Link>
             <a href="https://wa.me/919944558081" target="_blank" rel="noreferrer" className="btn btn-whatsapp">
               <i className="fab fa-whatsapp"></i> Chat with Us
             </a>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>
