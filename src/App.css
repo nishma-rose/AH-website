@@ -99,23 +99,50 @@ nav a.active-nav::after {
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
   z-index: 1;
+  display: flex;
+  transition: transform 1s cubic-bezier(0.65, 0, 0.35, 1);
+  will-change: transform;
 }
 
 .hero-slide {
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
+  flex: 0 0 100%;
+  height: 100%;
   background-size: cover; background-position: center;
-  opacity: 0;
-  transition: opacity 1s ease-in-out;
-  background-attachment: fixed;
+  position: relative;
+  background-attachment: scroll;
+}
+.hero-slide::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(160deg, rgb(79 67 21 / 75%) 0%, rgba(0,0,0,0.55) 100%); }
+
+.hero-dots {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  z-index: 10;
 }
 
-.hero-slide.active { opacity: 1; }
-.hero-slide::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(160deg, rgb(79 67 21 / 75%) 0%, rgba(0,0,0,0.55) 100%); }
+.hero-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.hero-dot.active {
+  background: var(--gold);
+  width: 30px;
+  border-radius: 10px;
+}
 
 .hero-content { max-width: 700px; }
 .hero-badge {
-  display: inline-block; padding: 0.4rem 1.2rem; border: 1px solid var(--gold);
+  display: inline-block; padding: 0.4rem 1.2rem; 
   color: var(--gold); font-size: 0.85rem; letter-spacing: 3px; text-transform: uppercase;
   margin-bottom: 1.5rem; border-radius: 2px;
   animation: heroTextReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -392,9 +419,9 @@ nav a.active-nav::after {
 .contact-section { background: var(--light); }
 .contact-grid { 
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-    align-items: center;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: start;
 }
 .contact-details { display: flex; flex-direction: column; gap: 1.8rem; }
 .contact-item { display: flex; gap: 1rem; align-items: flex-start; }
@@ -420,7 +447,15 @@ nav a.active-nav::after {
 .form-error { color: #e74c3c; font-size: 0.9rem; margin-top: 0.5rem; }
 
 .map-wrapper { border-radius: 12px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-.map-wrapper iframe { width: 100%; height: 100%; min-height: 380px; border: 0; }
+.map-wrapper iframe { width: 100%; height: 100%; min-height: 450px; border: 0; display: block; }
+
+/* Desktop Layout for Contact Section */
+@media (min-width: 992px) {
+  .contact-grid {
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 4rem;
+  }
+}
 
 footer { background: var(--black); color: var(--white); padding: 3rem 0 1.5rem; }
 .footer-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; padding-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
@@ -483,6 +518,8 @@ footer { background: var(--black); color: var(--white); padding: 3rem 0 1.5rem; 
   .hero { min-height: 90vh; background-attachment: scroll; padding-top: 23rem; }
   .hero-content h1 { font-size: 2.4rem; }
   .hero-content p { font-size: 1rem; }
+
+  .hero-dots { bottom: 20px; }
 
   .rate-banner { display: flex; padding: 0.6rem 0.5rem; flex-wrap: wrap; justify-content: center; gap: 0.4rem; }
   .rate-banner .container { gap: 0.4rem; flex-wrap: wrap; justify-content: center; width: 100%; }
