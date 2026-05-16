@@ -38,6 +38,16 @@ function AdminDashboard() {
     return () => unsubscribe();
   }, [navigate]);
 
+  useEffect(() => {
+    if (logoUrl) {
+      const favicon = document.querySelector("link[rel*='icon']");
+      const appleIcon = document.querySelector("link[rel='apple-touch-icon']");
+      
+      if (favicon) favicon.href = logoUrl;
+      if (appleIcon) appleIcon.href = logoUrl;
+    }
+  }, [logoUrl]);
+
   const fetchData = async () => {
     if (!db) {
       setLoading(false);

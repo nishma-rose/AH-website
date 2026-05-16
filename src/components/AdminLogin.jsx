@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import defaultLogo from '../assets/logo.png';
 
 function AdminLogin({ logoUrl }) {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -24,11 +24,13 @@ function AdminLogin({ logoUrl }) {
     setError('');
     
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      // Map the username to a internal email format for Firebase Auth
+      const loginEmail = username.includes('@') ? username : `${username.toLowerCase()}@ahjewellers.com`;
+      await signInWithEmailAndPassword(auth, loginEmail, password);
       showNotification('Logged in successfully!');
       navigate('/admin/dashboard');
     } catch (err) {
-      setError('Invalid credentials. Check email and password.');
+      setError('Invalid username or password.');
       showNotification('Invalid credentials', 'error');
     } finally {
       setLoading(false);
@@ -56,13 +58,13 @@ function AdminLogin({ logoUrl }) {
         <h1>Admin Login</h1>
         <form onSubmit={handleLogin}>
           <div className="form-group">
-            <label>Email</label>
+            <label>Username</label>
             <input 
-              type="email" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="text" 
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
-              placeholder="admin@example.com"
+              placeholder="example@gmail.com"
             />
           </div>
           <div className="form-group">
@@ -72,7 +74,7 @@ function AdminLogin({ logoUrl }) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              placeholder="Enter password"
+              placeholder="Enter your password"
             />
           </div>
           {error && <p className="error">{error}</p>}

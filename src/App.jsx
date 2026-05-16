@@ -129,6 +129,16 @@ function App() {
   const [logoUrl, setLogoUrl] = useState('');
 
   useEffect(() => {
+    if (logoUrl) {
+      const favicon = document.querySelector("link[rel*='icon']");
+      const appleIcon = document.querySelector("link[rel='apple-touch-icon']");
+      
+      if (favicon) favicon.href = logoUrl;
+      if (appleIcon) appleIcon.href = logoUrl;
+    }
+  }, [logoUrl]);
+
+  useEffect(() => {
     const loadInitialData = async () => {
       const startTime = Date.now();
       try {
