@@ -1357,9 +1357,6 @@ footer { background: var(--black); color: var(--white); padding: 3rem 0 1.5rem; 
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
-  .site-header {
-    /* padding: 0.6rem 1rem; */
-  }
   .site-header-left img {
     width: 32px;
     height: 32px;

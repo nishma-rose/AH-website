@@ -130,11 +130,15 @@ function App() {
 
   useEffect(() => {
     if (logoUrl) {
-      const favicon = document.querySelector("link[rel*='icon']");
-      const appleIcon = document.querySelector("link[rel='apple-touch-icon']");
-      
-      if (favicon) favicon.href = logoUrl;
-      if (appleIcon) appleIcon.href = logoUrl;
+      // Force browser to refresh the icon by removing and re-appending the tags
+      ['icon', 'shortcut icon', 'apple-touch-icon'].forEach(rel => {
+        const existingLink = document.querySelector(`link[rel="${rel}"]`);
+        const link = existingLink || document.createElement('link');
+        link.rel = rel;
+        link.href = logoUrl;
+        if (!existingLink) document.head.appendChild(link);
+        else { link.parentNode.removeChild(link); document.head.appendChild(link); }
+      });
     }
   }, [logoUrl]);
 

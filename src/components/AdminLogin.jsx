@@ -46,11 +46,9 @@ function AdminLogin({ logoUrl }) {
         </div>
       )}
       <header className="admin-login-header">
-        <Link to="/">
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '1rem', textDecoration: 'none' }}>
            <img src={logoUrl || defaultLogo} alt="Logo" />
-        </Link>
-        <Link to="/" style={{textDecoration: 'none'}}>
-          <span>A H JEWELLERS</span>
+           <span>A H JEWELLERS</span>
         </Link>
         <Link to="/" className="btn btn-outline">View Site</Link>
       </header>
