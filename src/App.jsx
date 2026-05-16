@@ -33,7 +33,7 @@ function Loading() {
   return <div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>;
 }
 
-function AppContent({ heroSlides, logoUrl }) {
+function AppContent({ heroSlides, logoUrl, rates }) {
   const location = useLocation();
 
   // Handle scrolling when the URL path changes (e.g., from / to /contact)
@@ -110,7 +110,7 @@ function AppContent({ heroSlides, logoUrl }) {
   return (
     <>
       <div className="main-site-header-stack">
-        <GoldRates logoUrl={logoUrl} />
+        <GoldRates logoUrl={logoUrl} initialRates={rates} />
         <Header logoUrl={logoUrl} />
       </div>
       <Hero slides={heroSlides} />
@@ -127,6 +127,7 @@ function AppContent({ heroSlides, logoUrl }) {
 function App() {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [heroSlides, setHeroSlides] = useState([]);
+  const [rates, setRates] = useState(null);
   // Load logo from cache immediately to prevent delay in Preloader on return visits
   const [logoUrl, setLogoUrl] = useState(localStorage.getItem('ah_logo_cache') || '');
 
@@ -159,16 +160,45 @@ function App() {
             }
           });
 
-          const heroSnap = await getDocs(collection(db, 'hero_slides'));
+          // Fetch Gold Rates
+          const ratesPromise = (async () => {
+            try {
+              let apiUrl = 'https://api.npoint.io/be02080f625fe3dcf48a';
+              const configSnap = await getDoc(doc(db, 'config', 'ratesApi'));
+              if (configSnap.exists() && configSnap.data().url) {
+                apiUrl = configSnap.data().url;
+              }
+              const response = await fetch(`${apiUrl}?nocache=${Date.now()}`, {
+                cache: 'no-store',
+                headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+              });
+              const data = await response.json();
+              const goldRate = data.Gold916 || data.gold;
+              const silverRate = data.Silver || data.silver;
+              if (goldRate) {
+                const fetchedRates = {
+                  gold: goldRate,
+                  silver: silverRate || null,
+                  date: data.LastUpdated || data.lastUpdated || new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+                };
+                setRates(fetchedRates);
+                return fetchedRates;
+              }
+            } catch (e) {
+              console.error("Rates fetch error:", e);
+            }
+            return null;
+          })();
 
+          const heroSnap = await getDocs(collection(db, 'hero_slides'));
           if (!heroSnap.empty) {
             setHeroSlides(heroSnap.docs.map(d => d.data()));
           } else {
             setHeroSlides(DEFAULT_HERO_SLIDES);
           }
 
-          // Ensure logo fetch is finalized before ending the preloader
-          await logoPromise;
+          // Ensure both logo and rates are finalized before ending the preloader
+          await Promise.all([logoPromise, ratesPromise]);
         } else {
           setHeroSlides(DEFAULT_HERO_SLIDES);
         }
@@ -187,7 +217,7 @@ function App() {
 
   return (
     <>
-      {isInitialLoading && <Preloader logoUrl={logo} />}
+      {isInitialLoading && <Preloader logoUrl={logoUrl || logo} />}
       {!isInitialLoading && (
         <Router>
           <Suspense fallback={<Loading />}>
@@ -196,7 +226,7 @@ function App() {
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/reviews" element={<TestimonialsPage logoUrl={logoUrl} />} />
               <Route path="/reviews/write" element={<WriteReviewPage logoUrl={logoUrl} />} />
-              <Route path="/*" element={<AppContent heroSlides={heroSlides} logoUrl={logoUrl} />} />
+              <Route path="/*" element={<AppContent heroSlides={heroSlides} logoUrl={logoUrl} rates={rates} />} />
             </Routes>
           </Suspense>
         </Router>

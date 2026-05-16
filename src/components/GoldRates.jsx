@@ -4,10 +4,12 @@ import { db } from '../firebase/config';
 import { doc, getDoc } from 'firebase/firestore';
 import logo from '../assets/logo.png';
 
-function GoldRates({ logoUrl }) {
-  const [rates, setRates] = useState(null);
+function GoldRates({ logoUrl, initialRates }) {
+  const [rates, setRates] = useState(initialRates);
 
   useEffect(() => {
+    if (initialRates) return; // Skip fetch if App.jsx already provided them
+
     const loadRates = async () => {
       try {
         let apiUrl = 'https://api.npoint.io/be02080f625fe3dcf48a';
