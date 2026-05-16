@@ -47,6 +47,45 @@ header {
   transition: box-shadow 0.3s;
   box-shadow: 0 2px 20px rgba(0,0,0,0.3);
 }
+
+.header-info-group {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.header-hours {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  border-right: 1px solid rgba(212, 175, 55, 0.3);
+  padding-right: 1.5rem;
+}
+.header-hours .info-label {
+  font-size: 0.7rem;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.header-hours strong {
+  font-size: 0.85rem;
+  color: var(--white);
+}
+
+.header-social {
+  display: flex;
+  gap: 1rem;
+}
+.header-social a {
+  color: rgba(255,255,255,0.7);
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+.header-social a:hover {
+  color: var(--gold);
+  transform: translateY(-2px);
+}
+
 header .container { display: flex; justify-content: space-between; align-items: center; }
 .logo-link { display: flex; align-items: center; gap: 12px; text-decoration: none; }
 .logo-img {
@@ -200,11 +239,6 @@ nav a.active-nav::after {
 .rate-banner .container {
   display: flex; align-items: center; justify-content: center; gap: 2rem; flex-wrap: wrap;
 }
-.rate-social { display: flex; gap: 1rem; }
-.rate-social a {
-  color: rgba(255,255,255,0.7); font-size: 1rem; transition: all 0.3s;
-}
-.rate-social a:hover { color: var(--gold); transform: scale(1.2); }
 .rate-banner::before {
   content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
   background: linear-gradient(120deg, transparent, rgba(255,215,0,0.15), transparent);
@@ -505,6 +539,7 @@ footer { background: var(--black); color: var(--white); padding: 3rem 0 1.5rem; 
   header .container { padding: 0 1rem; justify-content: space-between; }
   .logo-text { font-size: 1.2rem; }
   .logo-img { width: 40px; height: 40px; }
+  .header-info-group { display: none; }
   .menu-toggle { display: block !important; }
 
   nav { position: absolute; top: 100%; left: 0; width: 100%; z-index: 1101; }
@@ -532,8 +567,6 @@ footer { background: var(--black); color: var(--white); padding: 3rem 0 1.5rem; 
   .rate-item span { display: inline; font-size: 0.85rem; }
   .rate-item strong { font-size: 1.2rem; }
   .rate-item.rate-item--gold::after { display: none; }
-  .rate-social { width: 100%; justify-content: center; margin-top: 0.4rem; gap: 1rem; }
-  .rate-social a { font-size: 1rem; }
 
   .about-grid { grid-template-columns: 1fr; gap: 2rem; }
   .about-image { order: -1; }
@@ -1099,7 +1132,7 @@ footer { background: var(--black); color: var(--white); padding: 3rem 0 1.5rem; 
 }
 .tp-hero {
   background: linear-gradient(160deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 100%),
-              url('https://images.unsplash.com/photo-1617038224531-16d69b990921?auto=format&fit=crop&w=1950&q=80');
+              url('https://media.istockphoto.com/id/1427280412/photo/side-view-on-modern-computer-monitor-on-light-wooden-table-with-glasses-papers-smartphone-and.jpg?s=612x612&w=0&k=20&c=VobsA_eNplwZ_cNkfxqQU8F-7FCY1EOC-O-kkRZBvss=');
   background-size: cover;
   background-position: center;
   padding: 4rem 0;
@@ -1256,7 +1289,7 @@ footer { background: var(--black); color: var(--white); padding: 3rem 0 1.5rem; 
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .site-header {
-    padding: 0.6rem 1rem;
+    /* padding: 0.6rem 1rem; */
   }
   .site-header-left img {
     width: 32px;

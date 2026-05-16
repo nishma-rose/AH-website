@@ -47,8 +47,8 @@ function ReviewForm({ onSubmit, submitting = false }) {
 
   return (
     <div className="review-form-container">
-      <h2>Share Your Experience</h2>
-      <p>Your review helps us improve and helps others make informed decisions</p>
+      <h2 style={{color: "black"}}>Share Your Experience</h2>
+      <p style={{color: "black"}}>Your review helps us improve and helps others make informed decisions</p>
       
       <form onSubmit={handleSubmit} className="review-form">
         <div className="form-group">

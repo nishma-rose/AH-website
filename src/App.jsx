@@ -1,5 +1,5 @@
 import { useEffect, lazy, Suspense, useState, useLayoutEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { db } from './firebase/config';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import Header from './components/Header';
@@ -38,7 +38,7 @@ function AppContent({ heroSlides, logoUrl }) {
   // Handle scrolling when the URL path changes (e.g., from / to /contact)
   useLayoutEffect(() => {
     // Extract the section name from the path (remove base and slashes)
-    const path = location.pathname.replace(import.meta.env.BASE_URL, '').replace(/^\/|\/$/g, '');
+    const path = location.pathname.replace(/^\/|\/$/g, '');
     
     const sectionMap = {
       '': 'home',
@@ -57,7 +57,7 @@ function AppContent({ heroSlides, logoUrl }) {
         const offsetPosition = elementPosition + window.pageYOffset - offset;
         window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
       }
-    } else if (location.pathname === '/' || location.pathname === import.meta.env.BASE_URL) {
+    } else if (location.pathname === '/') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [location.pathname]);
@@ -89,10 +89,7 @@ function AppContent({ heroSlides, logoUrl }) {
         
         // Update selector to match the new Link paths
         const path = id === 'home' ? '' : id;
-        const baseUrl = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
-        const fullPath = (baseUrl + path).replace(/\/$/, '') || '/';
-        
-        const selector = `nav a[href="${fullPath}"]`;
+        const selector = `nav a[href="#/${path}"]`;
         
         const link = document.querySelector(selector);
         if (link) {
@@ -112,7 +109,7 @@ function AppContent({ heroSlides, logoUrl }) {
   return (
     <>
       <div className="main-site-header-stack">
-        <GoldRates />
+        <GoldRates logoUrl={logoUrl} />
         <Header logoUrl={logoUrl} />
       </div>
       <Hero slides={heroSlides} />
@@ -166,7 +163,7 @@ function App() {
     <>
       {isInitialLoading && <Preloader logoUrl={logoUrl} />}
       {!isInitialLoading && (
-        <Router basename={import.meta.env.BASE_URL}>
+        <Router>
           <Suspense fallback={<Loading />}>
             <Routes>
               <Route path="/admin" element={<AdminLogin logoUrl={logoUrl} />} />

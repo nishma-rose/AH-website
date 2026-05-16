@@ -63,8 +63,8 @@ function WriteReviewPage({ logoUrl }) {
           <button onClick={() => navigate('/reviews')} className="back-link">
             <i className="fas fa-arrow-left"></i> Back to Reviews
           </button>
-          <h1>Write a Review</h1>
-          <p>Share your experience with A H Jewellers</p>
+          <h1 style={{color: "black"}}>Write a Review</h1>
+          <p style={{color: "black"}}>Share your experience with A H Jewellers</p>
         </div>
       </section>
 

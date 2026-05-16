@@ -1,16 +1,10 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { db } from '../firebase/config';
 import { doc, getDoc } from 'firebase/firestore';
+import logo from '../assets/logo.png';
 
-const socialLinks = {
-  instagram: 'https://www.instagram.com/ahjewellers_vly?igsh=MWV6YTRjNnVyemZrYg==',
-  facebook: 'https://www.facebook.com/share/18DDtX4BxC/',
-  youtube: 'https://youtube.com/@ahjewellers?si=75d-fPDgEbta89cL',
-  linkedin: 'https://www.linkedin.com/company/ah-jewellers',
-  googleMap: 'https://www.google.com/maps/place/AH+JEWELLERS/@8.3879538,77.6096128,17z/data=!3m1!4b1!4m6!3m5!1s0x3b0467ea7f7d91d9:0xec2d8906723f2c2c!8m2!3d8.3879538!4d77.6096128!16s%2Fg%2F11vytd0pfv?hl=en&entry=ttu&g_ep=EgoyMDI2MDUwNi4wIKXMDSoASAFQAw%3D%3D'
-};
-
-function GoldRates() {
+function GoldRates({ logoUrl }) {
   const [rates, setRates] = useState(null);
 
   useEffect(() => {
@@ -52,6 +46,10 @@ function GoldRates() {
     return (
       <div id="rates" className="rate-banner">
         <div className="container" style={{maxWidth: '1600px'}}>
+          <Link to="/" className="logo-link" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', marginRight: 'auto' }}>
+            <img src={logoUrl || logo} className="logo-img" alt="Logo" style={{ height: '30px', width: 'auto' }} />
+            <span className="logo-text" style={{ color: '#D4AF37', fontWeight: '600', fontSize: '1.1rem', letterSpacing: '1px' }}>A H JEWELLERS</span>
+          </Link>
           <div className="rate-item rate-item--gold">
             <span className="rate-icon">🥇</span>
             <span>Gold 916 / Gram</span>
@@ -66,18 +64,6 @@ function GoldRates() {
             <span className="rate-icon">🕐</span>
             <span>Last Updated</span>
             <span style={{color: 'white'}}>--</span>
-          </div>
-          <div className="rate-social">
-            <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i className="fab fa-instagram"></i></a>
-            <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i className="fab fa-facebook-f"></i></a>
-            <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i className="fab fa-youtube"></i></a>
-            <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i className="fab fa-linkedin-in"></i></a>
-            <a href={socialLinks.googleMap} target="_blank" rel="noopener noreferrer" aria-label="Location"><i className="fas fa-map-marker-alt"></i></a>
-          </div>
-          <div className="rate-item--hours" style={{color: 'white'}}>
-          <span className="rate-icon">⏰</span>
-          <span style={{fontSize: '12px', color:"gray"}}>Opening Hours</span><br/>
-          <strong>09:00 AM - 09:00 PM</strong>
         </div>
         </div>
       </div>
@@ -87,6 +73,10 @@ function GoldRates() {
   return (
     <div id="rates" className="rate-banner">
       <div className="container" style={{maxWidth: '1600px'}}>
+        <Link to="/" className="logo-link" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', marginRight: 'auto' }}>
+          <img src={logoUrl || logo} className="logo-img" alt="Logo" style={{ height: '30px', width: 'auto' }} />
+          <span className="logo-text" style={{ color: '#D4AF37', fontWeight: '600', fontSize: '1.1rem', letterSpacing: '1px' }}>A H JEWELLERS</span>
+        </Link>
         <div className="rate-item rate-item--gold">
           <span className="rate-icon">🥇</span>
           <span>Gold 916 / Gram</span>
@@ -101,18 +91,6 @@ function GoldRates() {
           <span className="rate-icon">🕐</span>
           <span>Last Updated</span>
           <span style={{color: 'white'}}>{rates.date}</span>
-        </div>
-        <div className="rate-social">
-          <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i className="fab fa-instagram"></i></a>
-          <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i className="fab fa-facebook-f"></i></a>
-          <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i className="fab fa-youtube"></i></a>
-          <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i className="fab fa-linkedin-in"></i></a>
-          <a href={socialLinks.googleMap} target="_blank" rel="noopener noreferrer" aria-label="Location"><i className="fas fa-map-marker-alt"></i></a>
-        </div>
-        <div className="rate-item--hours" style={{color: 'white',fontSize: '12px'}}>
-          <span className="rate-icon">⏰</span>
-          <span style={{color:"gray"}}>Opening Hours</span><br/>
-          <strong>09:00 AM - 09:00 PM</strong>
         </div>
       </div>
     </div>
