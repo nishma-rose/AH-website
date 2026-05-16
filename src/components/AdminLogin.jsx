@@ -25,7 +25,7 @@ function AdminLogin({ logoUrl }) {
     
     try {
       // Map the username to a internal email format for Firebase Auth
-      const loginEmail = username.includes('@') ? username : `${username.toLowerCase()}@ahjewellers.com`;
+      const loginEmail = username.includes('@') ? username : `${username.toLowerCase()}@ahjewellers.in`;
       await signInWithEmailAndPassword(auth, loginEmail, password);
       showNotification('Logged in successfully!');
       navigate('/admin/dashboard');
@@ -62,7 +62,7 @@ function AdminLogin({ logoUrl }) {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              placeholder="example@gmail.com"
+              placeholder="AHadmin"
             />
           </div>
           <div className="form-group">
@@ -72,7 +72,7 @@ function AdminLogin({ logoUrl }) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              placeholder="Enter your password"
+              placeholder="admin@321"
             />
           </div>
           {error && <p className="error">{error}</p>}

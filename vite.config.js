@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/AH-website/', // ✅ FIXED
+  base: '/',
   build: {
     chunkSizeWarningLimit: 800
   }
