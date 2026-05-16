@@ -12,6 +12,7 @@ import Testimonials from './components/Testimonials';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Preloader from './components/Preloader';
+import logo from './assets/logo.png';
 import './App.css';
 
 const AdminLogin = lazy(() => import('./components/AdminLogin'));
@@ -186,7 +187,7 @@ function App() {
 
   return (
     <>
-      {isInitialLoading && <Preloader logoUrl={logoUrl} />}
+      {isInitialLoading && <Preloader logoUrl={logo} />}
       {!isInitialLoading && (
         <Router>
           <Suspense fallback={<Loading />}>
