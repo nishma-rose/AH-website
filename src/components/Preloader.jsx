@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from '../assets/logo.png';
 
-const Preloader = () => {
+const Preloader = ({ logoUrl }) => {
   return (
     <div style={styles.overlay}>
       <style>
@@ -26,7 +26,7 @@ const Preloader = () => {
       <div style={styles.container} className="preloader-animate-in">
         <div className="logo-pulse">
           <img 
-            src={logo} 
+            src={logoUrl || logo} 
             alt="A H Jewellers" 
             style={styles.logo} 
           />

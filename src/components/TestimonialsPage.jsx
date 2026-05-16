@@ -4,6 +4,7 @@ import { db } from '../firebase/config';
 import { collection, getDocs, limit } from 'firebase/firestore';
 import StarRating from './ReviewForm';
 import { fetchGoogleReviews, formatGoogleReviews } from '../services/googlePlaces';
+import defaultLogo from '../assets/logo.png';
 
 const defaultTestimonials = [
   { name: 'Ramya S.', location: 'Valliyur', text: 'Excellent quality gold jewellery with transparent pricing. The designs are beautiful and the staff is very helpful. A H Jewellers is our family\'s go-to shop!', initial: 'R', rating: 5, source: 'firebase' },
@@ -11,7 +12,7 @@ const defaultTestimonials = [
   { name: 'Suresh P.', location: 'Valliyur', text: 'Best jewellery shop in the area. Fair rates, honest dealings, and wonderful collection. The exchange policy is also very customer-friendly.', initial: 'S', rating: 5, source: 'firebase' }
 ];
 
-function TestimonialsPage() {
+function TestimonialsPage({ logoUrl }) {
   const [testimonials, setTestimonials] = useState(defaultTestimonials);
   const [googleAvgRating, setGoogleAvgRating] = useState(0);
   const [googleTotalRatings, setGoogleTotalRatings] = useState(0);
@@ -67,7 +68,7 @@ function TestimonialsPage() {
       <header className="site-header">
         <div className="site-header-left">
            <Link to="/">
-             <img src={`${import.meta.env.BASE_URL}logo.png`} alt="Logo" />
+             <img src={logoUrl || defaultLogo} alt="Logo" />
            </Link>
           <Link to="/" className="site-header-title">
             <span>A H JEWELLERS</span>

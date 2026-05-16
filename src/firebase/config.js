@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAQRAq2egyJoMXbnrUCXu82RJqbWdyG8ow",
@@ -15,6 +16,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
+const storage = getStorage(app);
 
 try {
   enableIndexedDbPersistence(db).catch(() => {});
@@ -22,4 +24,4 @@ try {
   console.log('Persistence error:', e);
 }
 
-export { db, auth };
+export { db, auth, storage };

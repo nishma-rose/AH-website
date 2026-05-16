@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 function Hero({ slides }) {
   const [current, setCurrent] = useState(0);
@@ -88,7 +89,7 @@ function Hero({ slides }) {
           <h1 dangerouslySetInnerHTML={{ __html: slides[current].title }}></h1>
           <p>{slides[current].subtitle}</p>
           <div className="hero-buttons">
-            <a href="#collections" className="btn btn-gold">View Collections</a>
+            <Link to="/collections" className="btn btn-gold">View Collections</Link>
             <a href="https://wa.me/919944558081" target="_blank" rel="noreferrer" className="btn btn-whatsapp">
               <i className="fab fa-whatsapp"></i> Chat with Us
             </a>

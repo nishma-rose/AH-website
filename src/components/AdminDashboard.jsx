@@ -22,6 +22,7 @@ function AdminDashboard() {
   const [heroSlides, setHeroSlides] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
   const [pendingReviews, setPendingReviews] = useState([]);
+  const [logoUrl, setLogoUrl] = useState('');
   const [rates, setRates] = useState({ gold: '', silver: '' });
   const [ratesApiUrl, setRatesApiUrl] = useState('');
   const [loading, setLoading] = useState(true);
@@ -53,7 +54,7 @@ function AdminDashboard() {
       const allTestimonials = testSnap.docs.map(d => ({ id: d.id, ...d.data() }));
       setTestimonials(allTestimonials.filter(t => t.approved === true));
       setPendingReviews(allTestimonials.filter(t => t.approved !== true));
-      
+
       const rateSnap = await getDocs(query(collection(db, 'rates'), limit(1)));
       if (!rateSnap.empty) {
         setRates(rateSnap.docs[0].data());
@@ -62,6 +63,11 @@ function AdminDashboard() {
       const configSnap = await getDoc(doc(db, 'config', 'ratesApi'));
       if (configSnap.exists()) {
         setRatesApiUrl(configSnap.data().url || '');
+      }
+
+      const logoSnap = await getDoc(doc(db, 'config', 'logo'));
+      if (logoSnap.exists()) {
+        setLogoUrl(logoSnap.data().url || '');
       }
     } catch (err) {
       console.error('Error fetching data:', err);
@@ -166,6 +172,15 @@ function AdminDashboard() {
     showNotification('API URL saved successfully!');
   };
 
+  const updateLogo = async (url) => {
+    if (!db) return;
+    setSaving(true);
+    await setDoc(doc(db, 'config', 'logo'), { url, updatedAt: new Date().toISOString() });
+    setLogoUrl(url);
+    setSaving(false);
+    showNotification('Logo updated successfully!');
+  };
+
   if (loading) return (
     <div className="admin-loading">
       <div className="loading-spinner">
@@ -191,7 +206,7 @@ function AdminDashboard() {
       <header className="admin-header">
         <div className="admin-header-left">
           <Link to="/">
-              <img src={`${import.meta.env.BASE_URL}logo.png`} alt="Logo" />
+              <img src={logoUrl || `${import.meta.env.BASE_URL}logo.png`} alt="Logo" />
           </Link>
           <Link to="/" className="admin-header-title">
             <span>A H JEWELLERS</span>
@@ -204,6 +219,7 @@ function AdminDashboard() {
       </header>
       
       <nav className="admin-tabs">
+        <button className={activeTab === 'logo' ? 'active' : ''} onClick={() => setActiveTab('logo')}>Logo</button>
         <button className={activeTab === 'hero' ? 'active' : ''} onClick={() => setActiveTab('hero')}>Hero Slider</button>
         <button className={activeTab === 'collections' ? 'active' : ''} onClick={() => setActiveTab('collections')}>Collections</button>
         <button className={activeTab === 'testimonials' ? 'active' : ''} onClick={() => setActiveTab('testimonials')}>
@@ -213,6 +229,9 @@ function AdminDashboard() {
       </nav>
 
       <main className="admin-content">
+        {activeTab === 'logo' && (
+          <LogoManager currentLogo={logoUrl} onUpload={updateLogo} showNotification={showNotification} setSaving={setSaving} />
+        )}
         {activeTab === 'hero' && (
           <HeroSlideManager 
             slides={heroSlides} 
@@ -238,6 +257,57 @@ function AdminDashboard() {
           <RatesManager rates={rates} setRates={setRates} onSave={updateRates} showNotification={showNotification} apiUrl={ratesApiUrl} onSaveApiUrl={saveRatesApiUrl} />
         )}
       </main>
+    </div>
+  );
+}
+
+function LogoManager({ currentLogo, onUpload, showNotification, setSaving }) {
+  const [uploading, setUploading] = useState(false);
+  const [preview, setPreview] = useState(currentLogo);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Firestore documents have a 1MB limit. 
+    // Storing as Base64 increases size, so we limit the file to 500KB.
+    if (file.size > 500 * 1024) {
+      showNotification('Logo file is too large. Please select an image under 500KB.', 'error');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadstart = () => {
+      setUploading(true);
+      if (setSaving) setSaving(true);
+    };
+    reader.onloadend = async () => {
+      const base64Data = reader.result;
+      setPreview(base64Data);
+      try {
+        // Save the Base64 string directly to Firestore
+        await onUpload(base64Data);
+      } catch (err) {
+        showNotification('Failed to save logo to database.', 'error');
+      } finally {
+        setUploading(false);
+        if (setSaving) setSaving(false);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  return (
+    <div className="manager">
+      <h2>Store Logo Update</h2>
+      <div className="add-form" style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+        <p>Preview:</p>
+        <img src={preview || `${import.meta.env.BASE_URL}logo.png`} alt="Logo Preview" style={{ width: '80px', height: '80px', borderRadius: '50%', border: '2px solid var(--gold)', margin: '15px 0', objectFit: 'cover' }} />
+        <label className="btn btn-gold" style={{ cursor: 'pointer' }}>
+          {uploading ? 'Uploading...' : 'Upload Logo from Device'}
+          <input type="file" accept="image/*" onChange={handleFileChange} style={{ display: 'none' }} disabled={uploading} />
+        </label>
+      </div>
     </div>
   );
 }

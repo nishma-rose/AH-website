@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
 
-function Header() {
+function Header({ logoUrl }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
@@ -12,7 +12,7 @@ function Header() {
      <header>
        <div className="container">
          <Link to="/" className="logo-link">
-            <img src={logo} className="logo-img" alt="A H Jewellers Logo" />
+            <img src={logoUrl || logo} className="logo-img" alt="A H Jewellers Logo" />
            <span className="logo-text">A H JEWELLERS</span>
          </Link>
          <button className="menu-toggle" onClick={toggleMenu} aria-label="Toggle navigation">
@@ -20,11 +20,11 @@ function Header() {
          </button>
          <nav>
            <ul id="nav-menu" className={menuOpen ? 'active' : ''}>
-             <li><a href="#home" onClick={closeMenu}>Home</a></li>
-             <li><a href="#collections" onClick={closeMenu}>Collections</a></li>
-             <li><a href="#about" onClick={closeMenu}>About</a></li>
-             <li><a href="#reviews" onClick={closeMenu}>Reviews</a></li>
-             <li><a href="#contact" onClick={closeMenu}>Contact</a></li>
+             <li><Link to="/" onClick={closeMenu}>Home</Link></li>
+             <li><Link to="/collections" onClick={closeMenu}>Collections</Link></li>
+             <li><Link to="/about" onClick={closeMenu}>About</Link></li>
+             <li><Link to="/reviews" onClick={closeMenu}>Reviews</Link></li>
+             <li><Link to="/contact" onClick={closeMenu}>Contact</Link></li>
              {/* <li><Link to="/admin" className="admin-link" onClick={closeMenu}>Admin</Link></li> */}
           </ul>
         </nav>

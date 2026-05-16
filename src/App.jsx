@@ -1,7 +1,7 @@
-import { useEffect, lazy, Suspense, useState } from 'react';
-import { HashRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { useEffect, lazy, Suspense, useState, useLayoutEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { db } from './firebase/config';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import GoldRates from './components/GoldRates';
@@ -32,8 +32,35 @@ function Loading() {
   return <div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>;
 }
 
-function AppContent({ heroSlides }) {
-  const navigate = useNavigate();
+function AppContent({ heroSlides, logoUrl }) {
+  const location = useLocation();
+
+  // Handle scrolling when the URL path changes (e.g., from / to /contact)
+  useLayoutEffect(() => {
+    // Extract the section name from the path (remove base and slashes)
+    const path = location.pathname.replace(import.meta.env.BASE_URL, '').replace(/^\/|\/$/g, '');
+    
+    const sectionMap = {
+      '': 'home',
+      'collections': 'collections',
+      'about': 'about',
+      'reviews': 'reviews',
+      'contact': 'contact'
+    };
+
+    const targetId = sectionMap[path];
+    if (targetId) {
+      const element = document.getElementById(targetId);
+      if (element) {
+        const offset = 130; 
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - offset;
+        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+      }
+    } else if (location.pathname === '/' || location.pathname === import.meta.env.BASE_URL) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -60,7 +87,12 @@ function AppContent({ heroSlides }) {
         const height = section.offsetHeight;
         const id = section.getAttribute('id');
         
-        const selector = `nav a[href="#${id}"]`;
+        // Update selector to match the new Link paths
+        const path = id === 'home' ? '' : id;
+        const baseUrl = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
+        const fullPath = (baseUrl + path).replace(/\/$/, '') || '/';
+        
+        const selector = `nav a[href="${fullPath}"]`;
         
         const link = document.querySelector(selector);
         if (link) {
@@ -81,7 +113,7 @@ function AppContent({ heroSlides }) {
     <>
       <div className="main-site-header-stack">
         <GoldRates />
-        <Header />
+        <Header logoUrl={logoUrl} />
       </div>
       <Hero slides={heroSlides} />
       <Features />
@@ -97,6 +129,7 @@ function AppContent({ heroSlides }) {
 function App() {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [heroSlides, setHeroSlides] = useState([]);
+  const [logoUrl, setLogoUrl] = useState('');
 
   useEffect(() => {
     const loadInitialData = async () => {
@@ -108,6 +141,11 @@ function App() {
             setHeroSlides(snap.docs.map(d => d.data()));
           } else {
             setHeroSlides(DEFAULT_HERO_SLIDES);
+          }
+
+          const logoSnap = await getDoc(doc(db, 'config', 'logo'));
+          if (logoSnap.exists()) {
+            setLogoUrl(logoSnap.data().url);
           }
         } else {
           setHeroSlides(DEFAULT_HERO_SLIDES);
@@ -126,16 +164,16 @@ function App() {
 
   return (
     <>
-      {isInitialLoading && <Preloader />}
+      {isInitialLoading && <Preloader logoUrl={logoUrl} />}
       {!isInitialLoading && (
-        <Router>
+        <Router basename={import.meta.env.BASE_URL}>
           <Suspense fallback={<Loading />}>
             <Routes>
-              <Route path="/admin" element={<AdminLogin />} />
+              <Route path="/admin" element={<AdminLogin logoUrl={logoUrl} />} />
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
-              <Route path="/reviews" element={<TestimonialsPage />} />
-              <Route path="/reviews/write" element={<WriteReviewPage />} />
-              <Route path="/*" element={<AppContent heroSlides={heroSlides} />} />
+              <Route path="/reviews" element={<TestimonialsPage logoUrl={logoUrl} />} />
+              <Route path="/reviews/write" element={<WriteReviewPage logoUrl={logoUrl} />} />
+              <Route path="/*" element={<AppContent heroSlides={heroSlides} logoUrl={logoUrl} />} />
             </Routes>
           </Suspense>
         </Router>

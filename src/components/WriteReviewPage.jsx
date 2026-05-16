@@ -5,7 +5,7 @@ import { collection, addDoc } from 'firebase/firestore';
 import { StarRating, ReviewForm } from './ReviewForm';
 import logo from '../assets/logo.png';
 
-function WriteReviewPage() {
+function WriteReviewPage({ logoUrl }) {
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
 
@@ -47,7 +47,7 @@ function WriteReviewPage() {
       <header className="site-header">
         <div className="site-header-left">
           <Link to="/">
-              <img src={logo} alt="Logo" />
+              <img src={logoUrl || logo} alt="Logo" />
           </Link>
           <Link to="/" className="site-header-title">
             <span>A H JEWELLERS</span>
