@@ -86,6 +86,8 @@ header {
   transform: translateY(-2px);
 }
 
+.mobile-menu-info { display: none; }
+
 header .container { display: flex; justify-content: space-between; align-items: center; }
 .logo-link { display: flex; align-items: center; gap: 12px; text-decoration: none; }
 .logo-img {
@@ -98,6 +100,18 @@ header .container { display: flex; justify-content: space-between; align-items: 
 .logo-text {
   font-family: var(--font-display); font-size: 1.6rem; font-weight: 700;
   color: var(--gold); letter-spacing: 1px; transition: text-shadow 0.3s, color 0.3s;
+}
+
+.rate-logo {
+  margin-right: auto;
+  gap: 10px !important;
+  text-decoration: none;
+}
+.rate-logo .logo-img {
+  height: 30px; width: auto;
+}
+.rate-logo .logo-text {
+  font-size: 1.1rem; font-weight: 600;
 }
 .logo-link:hover .logo-text { color: #fff; text-shadow: 0 0 12px rgba(212,175,55,0.6); }
 
@@ -539,7 +553,56 @@ footer { background: var(--black); color: var(--white); padding: 3rem 0 1.5rem; 
   header .container { padding: 0 1rem; justify-content: space-between; }
   .logo-text { font-size: 1.2rem; }
   .logo-img { width: 40px; height: 40px; }
-  .header-info-group { display: none; }
+  .header-info-group { 
+    display: flex; 
+    gap: 0.8rem;
+    align-items: center;
+  }
+  .header-hours {
+    border-right: 1px solid rgba(212, 175, 55, 0.2);
+    padding-right: 0.8rem;
+    text-align: right;
+  }
+  .header-hours .info-label {
+    display: none;
+  }
+  .header-hours strong {
+    font-size: 0.7rem;
+  }
+  .header-social {
+    gap: 0.7rem;
+  }
+  .mobile-menu-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2.5rem 0;
+    margin-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .mobile-hours {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .mobile-hours span {
+    font-size: 0.7rem;
+    color: var(--gray);
+    text-transform: uppercase;
+  }
+   .mobile-hours strong {
+    font-size: 0.9rem;
+    color: var(--white)
+  }
+  .mobile-social {
+    display: flex;
+    gap: 1.5rem;
+  }
+  .mobile-social a {
+    color: var(--gold);
+    font-size: 1.4rem;
+  }
   .menu-toggle { display: block !important; }
 
   nav { position: absolute; top: 100%; left: 0; width: 100%; z-index: 1101; }
@@ -567,6 +630,12 @@ footer { background: var(--black); color: var(--white); padding: 3rem 0 1.5rem; 
   .rate-item span { display: inline; font-size: 0.85rem; }
   .rate-item strong { font-size: 1.2rem; }
   .rate-item.rate-item--gold::after { display: none; }
+
+  .rate-logo {
+    margin-right: 0;
+    width: 100%;
+    justify-content: center;
+  }
 
   .about-grid { grid-template-columns: 1fr; gap: 2rem; }
   .about-image { order: -1; }
@@ -1354,7 +1423,7 @@ footer { background: var(--black); color: var(--white); padding: 3rem 0 1.5rem; 
   padding-top: 80px;
 }
 .wr-hero {
-  background: var(--dark);
+  /* background: var(--dark); */
   padding: 3rem 0;
   text-align: center;
   color: var(--white);

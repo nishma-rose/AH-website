@@ -29,6 +29,19 @@ function Header({ logoUrl }) {
              <li><Link to="/reviews" onClick={closeMenu}>Reviews</Link></li>
              <li><Link to="/contact" onClick={closeMenu}>Contact</Link></li>
              {/* <li><Link to="/admin" className="admin-link" onClick={closeMenu}>Admin</Link></li> */}
+             <li className="mobile-menu-info">
+               <div className="mobile-hours">
+                 <span>Opening Hours</span>
+                 <strong>09:00 AM - 09:00 PM</strong>
+               </div>
+               <div className="mobile-social">
+                 <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer"><i className="fab fa-instagram"></i></a>
+                 <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer"><i className="fab fa-facebook-f"></i></a>
+                 <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer"><i className="fab fa-youtube"></i></a>
+                 <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer"><i className="fab fa-linkedin-in"></i></a>
+                 <a href={socialLinks.googleMap} target="_blank" rel="noopener noreferrer"><i className="fas fa-map-marker-alt"></i></a>
+               </div>
+             </li>
           </ul>
         </nav>
         <div className="header-info-group">

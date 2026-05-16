@@ -46,9 +46,9 @@ function GoldRates({ logoUrl }) {
     return (
       <div id="rates" className="rate-banner">
         <div className="container" style={{maxWidth: '1600px'}}>
-          <Link to="/" className="logo-link" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', marginRight: 'auto' }}>
-            <img src={logoUrl || logo} className="logo-img" alt="Logo" style={{ height: '30px', width: 'auto' }} />
-            <span className="logo-text" style={{ color: '#D4AF37', fontWeight: '600', fontSize: '1.1rem', letterSpacing: '1px' }}>A H JEWELLERS</span>
+          <Link to="/" className="logo-link rate-logo">
+            <img src={logoUrl || logo} className="logo-img" alt="Logo" />
+            <span className="logo-text">A H JEWELLERS</span>
           </Link>
           <div className="rate-item rate-item--gold">
             <span className="rate-icon">🥇</span>
@@ -73,9 +73,9 @@ function GoldRates({ logoUrl }) {
   return (
     <div id="rates" className="rate-banner">
       <div className="container" style={{maxWidth: '1600px'}}>
-        <Link to="/" className="logo-link" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', marginRight: 'auto' }}>
-          <img src={logoUrl || logo} className="logo-img" alt="Logo" style={{ height: '30px', width: 'auto' }} />
-          <span className="logo-text" style={{ color: '#D4AF37', fontWeight: '600', fontSize: '1.1rem', letterSpacing: '1px' }}>A H JEWELLERS</span>
+        <Link to="/" className="logo-link rate-logo">
+          <img src={logoUrl || logo} className="logo-img" alt="Logo" />
+          <span className="logo-text">A H JEWELLERS</span>
         </Link>
         <div className="rate-item rate-item--gold">
           <span className="rate-icon">🥇</span>
