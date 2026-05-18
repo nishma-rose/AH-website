@@ -144,13 +144,13 @@ nav a.active-nav::after {
 
 .hero {
   height: 70vh;
-  margin-top: 130px;
+  margin-top: 105px;
   display: flex; align-items: center; justify-content: center; text-align: center;
   color: var(--white); padding: 0;
   background-color: black;
   position: relative;
   overflow: hidden;
-  scroll-margin-top: 130px;
+  scroll-margin-top: 105px;
 }
 
 .hero-slider {
@@ -648,7 +648,7 @@ footer { background: var(--black); color: var(--white); padding: 3rem 0 1.5rem; 
   nav ul.active { display: flex; }
   nav ul li a { display: block; padding: 0.8rem 0; color: #fff; }
 
-  .hero { height: 60vh; background-attachment: scroll; margin-top: 160px; }
+  .hero { height: 60vh; background-attachment: scroll; margin-top: 136px; }
   .hero-content h1 { font-size: 2.4rem; }
   .hero-content p { font-size: 1rem; }
 
