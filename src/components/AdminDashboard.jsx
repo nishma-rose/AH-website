@@ -401,10 +401,10 @@ function HeroSlideManager({ slides, onAdd, onDelete, onUpdate, showNotification 
     <div className="manager">
       <h2>Manage Hero Slides</h2>
       <form onSubmit={handleSubmit} className="add-form">
-        <input placeholder="Main Title (use <em> for gold text)" value={form.title} onChange={e => setForm({...form, title: e.target.value})} />
-        <input placeholder="Subtitle" value={form.subtitle} onChange={e => setForm({...form, subtitle: e.target.value})} />
-        <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '1rem' }}>
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+        {/* <input placeholder="Main Title (use <em> for gold text)" value={form.title} onChange={e => setForm({...form, title: e.target.value})} />
+        <input placeholder="Subtitle" value={form.subtitle} onChange={e => setForm({...form, subtitle: e.target.value})} /> */}
+        <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '1.5rem' }}>
+          <div className="admin-upload-row">
             <input placeholder="Desktop Image URL" value={form.image} onChange={e => setForm({...form, image: e.target.value})} style={{ flex: 1, margin: 0 }} />
             <span style={{ fontSize: '0.8rem', color: '#666' }}>OR</span>
             <label className="btn btn-outline btn-sm" style={{ cursor: 'pointer', margin: 0, whiteSpace: 'nowrap', flexShrink: 0 }}>
@@ -412,7 +412,7 @@ function HeroSlideManager({ slides, onAdd, onDelete, onUpdate, showNotification 
               <input type="file" accept="image/*" onChange={e => handleFileChange(e, 'image')} style={{ display: 'none' }} disabled={uploading} />
             </label>
           </div>
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <div className="admin-upload-row">
             <input placeholder="Mobile Image URL (Optional)" value={form.mobileImage} onChange={e => setForm({...form, mobileImage: e.target.value})} style={{ flex: 1, margin: 0 }} />
             <span style={{ fontSize: '0.8rem', color: '#666' }}>OR</span>
             <label className="btn btn-outline btn-sm" style={{ cursor: 'pointer', margin: 0, whiteSpace: 'nowrap', flexShrink: 0 }}>
@@ -520,7 +520,7 @@ function CollectionManager({ collections, onAdd, onDelete }) {
       <form onSubmit={handleSubmit} className="add-form">
         <input placeholder="Title *" value={form.title} onChange={e => setForm({...form, title: e.target.value})} required />
         <input placeholder="Description" value={form.description} onChange={e => setForm({...form, description: e.target.value})} />
-        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', width: '100%', marginTop: '0.5rem' }}>
+        <div className="admin-upload-row" style={{ marginTop: '0.5rem' }}>
           <input placeholder="Image URL *" value={form.image} onChange={e => setForm({...form, image: e.target.value})} style={{ flex: 1, margin: 0 }} required />
           <span style={{ fontSize: '0.8rem', color: '#666' }}>OR</span>
           <label className="btn btn-outline btn-sm" style={{ cursor: 'pointer', margin: 0, whiteSpace: 'nowrap', flexShrink: 0 }}>
@@ -680,24 +680,21 @@ function RatesManager({ rates, setRates, onSave, showNotification, apiUrl, onSav
         <h3 style={{marginBottom:"20px"}}>API Configuration</h3>
         <div className="form-group">
           <label>Rate API URL</label>
-          <div className="api-url-row">
-            <input style={{
-    padding: "15px",
-    margin: "0 20px 0 0",
-    width: "400px"
-}}
+          <div className="admin-upload-row">
+            <input 
               type="text" 
               value={localApiUrl} 
               onChange={e => setLocalApiUrl(e.target.value)} 
               placeholder="https://api.npoint.io/..."
+              style={{ flex: 1, margin: 0 }}
             />
             <button type="button" onClick={handleApiUrlSave} className="btn btn-sm">Save URL</button>
           </div>
         </div>
-        <div className="form-group" style={{margin: "20px 0 0 0"}}>
-          <label>Current API URL: {localApiUrl || apiUrl || 'Not set'}</label>
+        <div className="form-group" style={{margin: "20px 0 0 0", display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap'}}>
+          <label style={{margin: 0}}>Current API URL: {localApiUrl || apiUrl || 'Not set'}</label>
           <button 
-            type="button" style={{marginLeft: "20px"}}
+            type="button" 
             onClick={handleFetchFromApi} 
             className="btn btn-gold"
             disabled={fetchFromApi}
