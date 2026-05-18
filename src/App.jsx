@@ -21,12 +21,12 @@ const TestimonialsPage = lazy(() => import('./components/TestimonialsPage'));
 const WriteReviewPage = lazy(() => import('./components/WriteReviewPage'));
 
 const DEFAULT_HERO_SLIDES = [
-  {
-    badge: 'Pure Elegance',
-    title: 'Exquisite Gold <em>Collections</em>',
-    subtitle: 'Discover timeless craftsmanship and purity in every piece. Trusted by families since generations.',
-    image: 'https://images.unsplash.com/photo-1617038224531-16d69b990921?auto=format&fit=crop&w=1950&q=80'
-  }
+  // {
+  //   badge: '',
+  //   title: 'Exquisite Gold <em>Collections</em>',
+  //   subtitle: 'Discover timeless craftsmanship and purity in every piece. Trusted by families since generations.',
+  //   image: 'https://images.unsplash.com/photo-1617038224531-16d69b990921?auto=format&fit=crop&w=1950&q=80'
+  // }
 ];
 
 function Loading() {

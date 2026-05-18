@@ -253,6 +253,7 @@ function AdminDashboard() {
             onAdd={addHeroSlide} 
             onDelete={deleteHeroSlide} 
             onUpdate={updateHeroSlide} 
+            showNotification={showNotification}
           />
         )}
         {activeTab === 'collections' && (
@@ -327,16 +328,43 @@ function LogoManager({ currentLogo, onUpload, showNotification, setSaving }) {
   );
 }
 
-function HeroSlideManager({ slides, onAdd, onDelete, onUpdate }) {
+function HeroSlideManager({ slides, onAdd, onDelete, onUpdate, showNotification }) {
   const [form, setForm] = useState({ 
     title: '',
     subtitle: '', 
     image: '', 
-    badge: 'Pure Elegance',
     imageFit: 'cover',
     imagePosition: 'center'
   });
   const [editingId, setEditingId] = useState(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Firestore documents have a 1MB limit. 
+    // Storing as Base64 increases size, so we limit the file to 500KB.
+    if (file.size > 500 * 1024) {
+      showNotification('Image file is too large. Please select an image under 500KB.', 'error');
+      return;
+    }
+
+    const reader = new FileReader();
+    setUploading(true);
+    reader.onloadend = () => {
+      setForm(prev => ({ 
+        ...prev, 
+        image: reader.result
+      }));
+      setUploading(false);
+    };
+    reader.onerror = () => {
+      showNotification('Failed to read file.', 'error');
+      setUploading(false);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -346,14 +374,13 @@ function HeroSlideManager({ slides, onAdd, onDelete, onUpdate }) {
     } else {
       onAdd(form);
     }
-    setForm({ title: '', subtitle: '', image: '', badge: 'Pure Elegance', imageFit: 'cover', imagePosition: 'center' });
+    setForm({ title: '', subtitle: '', image: '', imageFit: 'cover', imagePosition: 'center' });
   };
   const startEdit = (slide) => {
     setForm({
       title: slide.title,
       subtitle: slide.subtitle,
       image: slide.image,
-      badge: slide.badge,
       imageFit: slide.imageFit || 'cover',
       imagePosition: slide.imagePosition || 'center'
     });
@@ -365,10 +392,24 @@ function HeroSlideManager({ slides, onAdd, onDelete, onUpdate }) {
     <div className="manager">
       <h2>Manage Hero Slides</h2>
       <form onSubmit={handleSubmit} className="add-form">
-        {/* <input placeholder="Badge (e.g. Pure Elegance)" value={form.badge} onChange={e => setForm({...form, badge: e.target.value})} />
         <input placeholder="Main Title (use <em> for gold text)" value={form.title} onChange={e => setForm({...form, title: e.target.value})} />
-        <input placeholder="Subtitle" value={form.subtitle} onChange={e => setForm({...form, subtitle: e.target.value})} /> */}
-        <input placeholder="Gold Image URL *" value={form.image} onChange={e => setForm({...form, image: e.target.value})} required />
+        <input placeholder="Subtitle" value={form.subtitle} onChange={e => setForm({...form, subtitle: e.target.value})} />
+        <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <input placeholder="Gold Image URL *" value={form.image} onChange={e => setForm({...form, image: e.target.value})} style={{ flex: 1, margin: 0 }} required />
+            <span style={{ fontSize: '0.8rem', color: '#666' }}>OR</span>
+            <label className="btn btn-outline btn-sm" style={{ cursor: 'pointer', margin: 0, whiteSpace: 'nowrap' }}>
+              {uploading ? 'Processing...' : 'Upload Device File'}
+              <input type="file" accept="image/*" onChange={handleFileChange} style={{ display: 'none' }} disabled={uploading} />
+            </label>
+          </div>
+          {form.image && (
+            <div style={{ marginBottom: '1rem' }}>
+              <p style={{ fontSize: '0.75rem', marginBottom: '5px', color: '#666' }}>Image Preview:</p>
+              <img src={form.image} alt="Preview" style={{ height: '60px', borderRadius: '4px', border: '1px solid var(--gold)' }} />
+            </div>
+          )}
+        </div>
         <input placeholder="Image Fit (cover, contain, or e.g. 100% 80%)" value={form.imageFit} onChange={e => setForm({...form, imageFit: e.target.value})} />
         <input placeholder="Image Position (center, top, or e.g. 50% 20%)" value={form.imagePosition} onChange={e => setForm({...form, imagePosition: e.target.value})} />
         <div style={{ display: 'flex', gap: '1rem', width: '100%' }}>
@@ -383,7 +424,7 @@ function HeroSlideManager({ slides, onAdd, onDelete, onUpdate }) {
     color: "white"}} 
               onClick={() => {
                 setEditingId(null);
-                setForm({ title: '', subtitle: '', image: '', badge: 'Pure Elegance', imageFit: 'cover', imagePosition: 'center' });
+                setForm({ title: '', subtitle: '', image: '', imageFit: 'cover', imagePosition: 'center' });
               }}
             >
               Cancel
@@ -394,9 +435,10 @@ function HeroSlideManager({ slides, onAdd, onDelete, onUpdate }) {
       <div className="items-grid">
         {slides.map(s => (
           <div key={s.id} className="item-card">
-            <img src={s.image} alt={s.title} />
-            <h3>{s.title.replace(/<[^>]*>?/gm, '')}</h3>
-            <p>{s.subtitle}</p>
+            <img src={s.image} alt="Slide Preview" />
+            {s.title && <h3>{s.title.replace(/<[^>]*>?/gm, '')}</h3>}
+            {s.subtitle && <p>{s.subtitle}</p>}
+            <p style={{ marginTop: '10px', fontSize: '0.8rem' }}>Fit: {s.imageFit} | Position: {s.imagePosition}</p>
             <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
               <button onClick={() => startEdit(s)} className="btn btn-outline" style={{ flex: 1, padding: '0.5rem', fontSize: '0.85rem' }}>Edit</button>
               <button onClick={() => onDelete(s.id)} className="delete-btn" style={{ flex: 1 }}>Delete</button>

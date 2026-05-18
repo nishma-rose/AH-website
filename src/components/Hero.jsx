@@ -85,9 +85,8 @@ function Hero({ slides }) {
 
       <div className="container" style={{ position: 'relative', zIndex: 2 }}>
         <div className="hero-content" key={current}>
-          <span className="hero-badge">{slides[current].badge}</span>
-          <h1 dangerouslySetInnerHTML={{ __html: slides[current].title }}></h1>
-          <p>{slides[current].subtitle}</p>
+          {slides[current].title && <h1 dangerouslySetInnerHTML={{ __html: slides[current].title }}></h1>}
+          {slides[current].subtitle && <p>{slides[current].subtitle}</p>}
           {/* <div className="hero-buttons">
             <Link to="/collections" className="btn btn-gold">View Collections</Link>
             <a href="https://wa.me/919944558081" target="_blank" rel="noreferrer" className="btn btn-whatsapp">
