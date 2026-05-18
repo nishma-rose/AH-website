@@ -370,6 +370,11 @@ function HeroSlideManager({ slides, onAdd, onDelete, onUpdate, showNotification 
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Ensure at least one image source is provided
+    if (!form.image && !form.mobileImage) {
+      showNotification('Please provide at least a Desktop or Mobile image.', 'error');
+      return;
+    }
     if (editingId) {
       onUpdate(editingId, form);
       setEditingId(null);
@@ -400,7 +405,7 @@ function HeroSlideManager({ slides, onAdd, onDelete, onUpdate, showNotification 
         <input placeholder="Subtitle" value={form.subtitle} onChange={e => setForm({...form, subtitle: e.target.value})} />
         <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '1rem' }}>
           <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-            <input placeholder="Desktop Image URL *" value={form.image} onChange={e => setForm({...form, image: e.target.value})} style={{ flex: 1, margin: 0 }} required />
+            <input placeholder="Desktop Image URL" value={form.image} onChange={e => setForm({...form, image: e.target.value})} style={{ flex: 1, margin: 0 }} />
             <span style={{ fontSize: '0.8rem', color: '#666' }}>OR</span>
             <label className="btn btn-outline btn-sm" style={{ cursor: 'pointer', margin: 0, whiteSpace: 'nowrap', flexShrink: 0 }}>
               {uploading === 'image' ? 'Processing...' : 'Upload Desktop'}

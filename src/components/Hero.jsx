@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 
 function Hero({ slides }) {
@@ -16,13 +16,22 @@ function Hero({ slides }) {
   // Minimum swipe distance for a touch move to be considered a swipe
   const minSwipeDistance = 50;
 
-  const nextSlide = () => {
-    setCurrent(prev => (prev === slides.length - 1 ? 0 : prev + 1));
-  };
+  // Filter slides based on the current device and visibility settings
+  const displaySlides = useMemo(() => {
+    return (slides || []).filter(slide => {
+      const visibility = slide.visibility || 'both';
+      if (visibility === 'both') return true;
+      return isMobile ? visibility === 'mobile' : visibility === 'desktop';
+    });
+  }, [slides, isMobile]);
 
-  const prevSlide = () => {
-    setCurrent(prev => (prev === 0 ? slides.length - 1 : prev - 1));
-  };
+  const nextSlide = useCallback(() => {
+    setCurrent(prev => (prev >= displaySlides.length - 1 ? 0 : prev + 1));
+  }, [displaySlides.length]);
+
+  const prevSlide = useCallback(() => {
+    setCurrent(prev => (prev <= 0 ? displaySlides.length - 1 : prev - 1));
+  }, [displaySlides.length]);
 
   const handleTouchStart = (e) => {
     setTouchEnd(null);
@@ -46,18 +55,18 @@ function Hero({ slides }) {
     }
   };
 
-  // Filter slides based on the current device and visibility settings
-  const displaySlides = slides.filter(slide => {
-    const visibility = slide.visibility || 'both';
-    if (visibility === 'both') return true;
-    return isMobile ? visibility === 'mobile' : visibility === 'desktop';
-  });
+  // Ensure current index is valid if the filtered list changes
+  useEffect(() => {
+    if (current >= displaySlides.length) {
+      setCurrent(0);
+    }
+  }, [displaySlides.length, current]);
 
   useEffect(() => {
     if (!displaySlides || displaySlides.length <= 1) return;
     const timer = setInterval(nextSlide, 5000);
     return () => clearInterval(timer);
-  }, [displaySlides, current]); // Reset timer when slide changes manually
+  }, [displaySlides.length, nextSlide]); // Reset timer when slides change or navigation occurs
 
   if (!displaySlides || displaySlides.length === 0) return null;
 
@@ -71,11 +80,11 @@ function Hero({ slides }) {
     >
       <div 
         className="hero-slider"
-        style={{ transform: `translateX(-${current * 100}%)` }}
+        style={{ transform: `translateX(-${Math.min(current, displaySlides.length - 1) * 100}%)` }}
       >
         {displaySlides.map((slide, index) => (
           <div 
-            key={index}
+            key={slide.id || index}
             className="hero-slide"
             style={{ 
               backgroundImage: `url(${isMobile && slide.mobileImage ? slide.mobileImage : slide.image})`,
