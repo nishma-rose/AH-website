@@ -144,7 +144,7 @@ nav a.active-nav::after {
 
 .hero {
   height: 70vh;
-  margin-top: 115px;
+  margin-top: 110px;
   display: flex; align-items: center; justify-content: center; text-align: center;
   color: var(--white); padding: 0;
   background-color: black;
@@ -247,6 +247,7 @@ nav a.active-nav::after {
 .btn-gold { background: var(--gold); color: var(--black); }
 .btn-gold:hover { background: var(--gold-dark); color: var(--white); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212,175,55,0.4); }
 .btn-outline { background: var(--gold); color: var(--white); border: 2px solid var(--gold); }
+.btn-sm { padding: 8px 16px; font-size: 0.85rem; }
 .btn-outline:hover { background: var(--gold); color: var(--black); transform: translateY(-2px); }
 .btn-whatsapp { background: #25D366; color: #fff; }
 .btn-whatsapp:hover { background: #1da851; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37,211,102,0.4); }

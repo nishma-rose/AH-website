@@ -5,6 +5,13 @@ function Hero({ slides }) {
   const [current, setCurrent] = useState(0);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Minimum swipe distance for a touch move to be considered a swipe
   const minSwipeDistance = 50;
@@ -39,13 +46,20 @@ function Hero({ slides }) {
     }
   };
 
+  // Filter slides based on the current device and visibility settings
+  const displaySlides = slides.filter(slide => {
+    const visibility = slide.visibility || 'both';
+    if (visibility === 'both') return true;
+    return isMobile ? visibility === 'mobile' : visibility === 'desktop';
+  });
+
   useEffect(() => {
-    if (!slides || slides.length <= 1) return;
+    if (!displaySlides || displaySlides.length <= 1) return;
     const timer = setInterval(nextSlide, 5000);
     return () => clearInterval(timer);
-  }, [slides, current]); // Reset timer when slide changes manually
+  }, [displaySlides, current]); // Reset timer when slide changes manually
 
-  if (!slides || slides.length === 0) return null;
+  if (!displaySlides || displaySlides.length === 0) return null;
 
   return (
     <section 
@@ -59,12 +73,12 @@ function Hero({ slides }) {
         className="hero-slider"
         style={{ transform: `translateX(-${current * 100}%)` }}
       >
-        {slides.map((slide, index) => (
+        {displaySlides.map((slide, index) => (
           <div 
             key={index}
             className="hero-slide"
             style={{ 
-              backgroundImage: `url(${slide.image})`,
+              backgroundImage: `url(${isMobile && slide.mobileImage ? slide.mobileImage : slide.image})`,
               backgroundSize: slide.imageFit || 'cover',
               backgroundPosition: slide.imagePosition || 'center'
             }}
@@ -73,7 +87,7 @@ function Hero({ slides }) {
       </div>
       
       <div className="hero-dots">
-        {slides.map((_, index) => (
+        {displaySlides.map((_, index) => (
           <button
             key={index}
             className={`hero-dot ${index === current ? 'active' : ''}`}
@@ -85,8 +99,8 @@ function Hero({ slides }) {
 
       <div className="container" style={{ position: 'relative', zIndex: 2 }}>
         <div className="hero-content" key={current}>
-          {slides[current].title && <h1 dangerouslySetInnerHTML={{ __html: slides[current].title }}></h1>}
-          {slides[current].subtitle && <p>{slides[current].subtitle}</p>}
+          {displaySlides[current]?.title && <h1 dangerouslySetInnerHTML={{ __html: displaySlides[current].title }}></h1>}
+          {displaySlides[current]?.subtitle && <p>{displaySlides[current].subtitle}</p>}
           {/* <div className="hero-buttons">
             <Link to="/collections" className="btn btn-gold">View Collections</Link>
             <a href="https://wa.me/919944558081" target="_blank" rel="noreferrer" className="btn btn-whatsapp">
