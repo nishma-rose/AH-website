@@ -63,7 +63,7 @@ function GoldRates({ logoUrl, initialRates }) {
               <span>Silver / Gram</span>
               <strong>₹ --</strong>
             </div>
-            <div className="rate-item rate-item--time">
+            <div className="rate-item rate-item--time" style={{paddingTop: '10px'}}>
               <span className="rate-icon">🕐</span>
               <span>Last Updated</span>
               <span style={{color: 'white'}}>--</span>
@@ -92,7 +92,7 @@ function GoldRates({ logoUrl, initialRates }) {
           <span>Silver / Gram</span>
           <strong>₹ {rates.silver || '--'}</strong>
         </div>
-          <div className="rate-item rate-item--time">
+          <div className="rate-item rate-item--time" style={{paddingTop: '10px'}}>
           <span className="rate-icon">🕐</span>
           <span>Last Updated</span>
           <span style={{color: 'white'}}>{rates.date}</span>
